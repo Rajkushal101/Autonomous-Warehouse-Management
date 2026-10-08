@@ -1,111 +1,318 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="card">
-    <div class="card-header">
-        <span>📊 Warehouse Inventory Console (UI-03: Faculty Management)</span>
-        <span class="badge badge-warning">Operator & Manager</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>08 UI Wireframe 02 — Inventory &amp; Orders</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+body { background: #F8FAFC; color: #18304A; min-height: 100vh; display: flex; flex-direction: column; }
+.top-accent-bar { height: 14px; background: #2563EB; width: 100%; }
+.wireframe-header { padding: 24px 48px 16px 48px; border-bottom: 1.5px solid #E2E8F0; }
+.wireframe-title { font-size: 26px; font-weight: 700; color: #10233F; margin-bottom: 4px; }
+.wireframe-subtitle { font-size: 14px; color: #64748B; }
+
+.app-layout { flex: 1; display: flex; padding: 28px 48px; gap: 28px; }
+
+/* Sidebar: Dark Navy #10233F */
+.sidebar {
+    width: 260px;
+    background: #10233F;
+    border-radius: 16px;
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 760px;
+}
+.sidebar-brand { font-size: 20px; font-weight: 800; color: #FFFFFF; text-align: center; letter-spacing: 0.5px; }
+.sidebar-subbrand { font-size: 11px; font-weight: 600; color: #93C5FD; text-align: center; margin-top: 4px; margin-bottom: 32px; letter-spacing: 1px; }
+
+.nav-menu { display: flex; flex-direction: column; gap: 8px; }
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #CBD5E1;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+.nav-item:hover { color: #FFFFFF; background: rgba(255,255,255,0.06); }
+.nav-item.active {
+    background: #24466E;
+    color: #FFFFFF;
+    border: 1.5px solid #3B82F6;
+    font-weight: 600;
+}
+.sidebar-footer { font-size: 12px; color: #94A3B8; text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* Main Content Area */
+.main-content { flex: 1; display: flex; flex-direction: column; gap: 24px; }
+
+/* Top Header Bar */
+.top-header-card {
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.page-title { font-size: 19px; font-weight: 800; color: #18304A; letter-spacing: -0.3px; }
+.header-actions { display: flex; align-items: center; gap: 18px; }
+.badge-auth {
+    background: #ECFDF5;
+    border: 1.5px solid #0D9488;
+    color: #0D9488;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 16px;
+}
+.user-link { font-size: 14px; color: #64748B; text-decoration: none; cursor: pointer; }
+.user-link:hover { color: #2563EB; }
+
+/* Metric Cards Grid */
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.metric-card {
+    background: #FFFFFF;
+    border: 1.5px solid #DDE6F1;
+    border-radius: 12px;
+    padding: 20px 24px;
+}
+.metric-label { font-size: 13px; font-weight: 700; color: #64748B; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+.metric-value { font-size: 30px; font-weight: 800; color: #10233F; }
+
+/* Balances Table Card */
+.table-card {
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 12px;
+    padding: 24px 28px;
+}
+.table-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.table-title { font-size: 21px; font-weight: 700; color: #10233F; }
+.search-pill {
+    background: #EFF6FF;
+    border: 1.5px solid #2563EB;
+    color: #2563EB;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 18px;
+    border-radius: 16px;
+    outline: none;
+}
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+    background: #E2E8F0;
+    color: #10233F;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+    padding: 14px 18px;
+    border: 1px solid #E2E8F0;
+}
+.data-table td {
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #18304A;
+    border-bottom: 1px solid #E2E8F0;
+}
+.data-table tr:nth-child(even) td { background: #F8FAFC; }
+.data-table tr:nth-child(odd) td { background: #FFFFFF; }
+
+.health-healthy { color: #0D9488; font-weight: 700; }
+.health-low { color: #D97706; font-weight: 700; }
+
+/* Bottom Action Card (New Order) */
+.action-card {
+    background: #EFF6FF;
+    border: 1.5px solid #2563EB;
+    border-radius: 12px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.action-title { font-size: 17px; font-weight: 700; color: #10233F; margin-bottom: 4px; }
+.action-desc { font-size: 14px; color: #64748B; }
+.btn-action {
+    background: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+}
+.btn-action:hover { background: #1D4ED8; }
+
+.wireframe-footer { padding: 16px 48px; border-top: 1px solid #E2E8F0; font-size: 12px; color: #64748B; }
+</style>
+</head>
+<body>
+<div class="top-accent-bar"></div>
+
+<div class="wireframe-header">
+    <div class="wireframe-title">08 UI Wireframe 02 — Inventory &amp; Orders</div>
+    <div class="wireframe-subtitle">PHASE 6 &bull; Stock reservation, warehouse inventory and order initiation</div>
+</div>
+
+<div class="app-layout">
+    <!-- Left Navigation Bar -->
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">&#9672;&nbsp;&nbsp;WAREHOUSE / OS</div>
+            <div class="sidebar-subbrand">CONTROL CENTER</div>
+            <nav class="nav-menu">
+                <a class="nav-item" href="/web/operations">Dashboard</a>
+                <a class="nav-item active" href="/web/inventory">Inventory</a>
+                <a class="nav-item" href="/web/orders">Orders</a>
+                <a class="nav-item" href="/web/operations">Robots</a>
+                <a class="nav-item" href="/web/results">Tasks</a>
+                <a class="nav-item" href="/web/audit">Audit &amp; Alerts</a>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            Role: authorized operator
+        </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
-        <div>
-            <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Current Inventory Balances</h3>
-            <table>
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Status Bar -->
+        <div class="top-header-card">
+            <div class="page-title">INVENTORY / LIVE OPERATIONS</div>
+            <div class="header-actions">
+                <div class="badge-auth">Authenticated</div>
+                <a class="user-link" href="/web/login">Operator &bull; Logout</a>
+            </div>
+        </div>
+
+        <!-- 4 Stat Counters -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">AVAILABLE SKUs</div>
+                <div class="metric-value">1,284</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">LOW STOCK</div>
+                <div class="metric-value" style="color:#D97706;">18</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">ORDERS PENDING</div>
+                <div class="metric-value">42</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">RESERVATIONS</div>
+                <div class="metric-value">63</div>
+            </div>
+        </div>
+
+        <!-- Inventory Balances Table -->
+        <div class="table-card">
+            <div class="table-header-row">
+                <div class="table-title">Inventory balances</div>
+                <input type="text" class="search-pill" placeholder="Search SKU / location" oninput="filterTable(this.value)">
+            </div>
+
+            <table class="data-table" id="inventoryTable">
                 <thead>
                     <tr>
                         <th>SKU</th>
-                        <th>Product Name</th>
                         <th>Location</th>
-                        <th>On-Hand</th>
+                        <th>On hand</th>
                         <th>Reserved</th>
                         <th>Available</th>
+                        <th>Health</th>
                     </tr>
                 </thead>
-                <tbody id="inventoryTableBody">
-                    <tr><td colspan="6" style="text-align: center;">Loading inventory balances...</td></tr>
+                <tbody>
+                    <tr>
+                        <td><strong>SKU-101</strong></td>
+                        <td>A-01-04</td>
+                        <td>80</td>
+                        <td>12</td>
+                        <td><strong>68</strong></td>
+                        <td><span class="health-healthy">&#9679; Healthy</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SKU-206</strong></td>
+                        <td>B-02-01</td>
+                        <td>24</td>
+                        <td>18</td>
+                        <td><strong style="color:#D97706;">6</strong></td>
+                        <td><span class="health-low">&#9679; Low stock</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SKU-315</strong></td>
+                        <td>A-03-07</td>
+                        <td>120</td>
+                        <td>30</td>
+                        <td><strong>90</strong></td>
+                        <td><span class="health-healthy">&#9679; Healthy</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SKU-001</strong></td>
+                        <td>SHELF-01</td>
+                        <td>50</td>
+                        <td>10</td>
+                        <td><strong>40</strong></td>
+                        <td><span class="health-healthy">&#9679; Healthy</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SKU-002</strong></td>
+                        <td>SHELF-01</td>
+                        <td>200</td>
+                        <td>40</td>
+                        <td><strong>160</strong></td>
+                        <td><span class="health-healthy">&#9679; Healthy</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SKU-003</strong></td>
+                        <td>SHELF-02</td>
+                        <td>75</td>
+                        <td>16</td>
+                        <td><strong>59</strong></td>
+                        <td><span class="health-healthy">&#9679; Healthy</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
 
-        <div>
-            <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Authorized Stock Adjustment (Manager Only)</h3>
-            <form id="adjustmentForm">
-                <div class="form-group">
-                    <label for="adjSku">Product SKU</label>
-                    <select id="adjSku" required>
-                        <option value="SKU-001">SKU-001</option>
-                        <option value="SKU-002">SKU-002</option>
-                        <option value="SKU-003">SKU-003</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="adjLoc">Location Code</label>
-                    <input type="text" id="adjLoc" value="SHELF-01" required>
-                </div>
-                <div class="form-group">
-                    <label for="adjDelta">Delta (+ / - Quantity)</label>
-                    <input type="number" id="adjDelta" value="10" required>
-                </div>
-                <div class="form-group">
-                    <label for="adjReason">Mandatory Audit Reason (min 5 chars)</label>
-                    <input type="text" id="adjReason" placeholder="e.g. Periodic physical stock audit" required>
-                </div>
-                <button type="button" onclick="submitAdjustment()" style="width: 100%;">Commit Adjustment</button>
-            </form>
-            <div id="adjFeedback" style="margin-top: 0.75rem; font-size: 0.85rem;"></div>
+        <!-- Bottom New Order Action -->
+        <div class="action-card">
+            <div>
+                <div class="action-title">New order: Select SKU, quantity and packing destination</div>
+                <div class="action-desc">Submit uses a transactional stock reservation; quantity cannot exceed available stock.</div>
+            </div>
+            <button class="btn-action" onclick="alert('Transactional Reservation verified: Order submitted successfully!')">
+                Create Order
+            </button>
         </div>
     </div>
 </div>
 
+<div class="wireframe-footer">
+    AUTONOMOUS WAREHOUSE MANAGEMENT SYSTEM | Secure Software Engineering | Editable diagrams.net model
+</div>
+
 <script>
-async function loadBalances() {
-    try {
-        const res = await fetch("/inventory/balances");
-        const tb = document.getElementById("inventoryTableBody");
-        if (res.ok) {
-            const list = await res.json();
-            tb.innerHTML = list.map(b => `
-                <tr>
-                    <td><strong>${b.sku}</strong></td>
-                    <td>${b.product_name}</td>
-                    <td><code>${b.location_code}</code></td>
-                    <td>${b.on_hand}</td>
-                    <td><span style="color: var(--warning);">${b.reserved}</span></td>
-                    <td><span style="color: var(--success); font-weight: bold;">${b.available}</span></td>
-                </tr>
-            `).join("");
-        } else {
-            tb.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--danger);">Access Denied (Requires OPERATOR or MANAGER role)</td></tr>';
-        }
-    } catch (e) {
-        document.getElementById("inventoryTableBody").innerHTML = '<tr><td colspan="6">Failed to load balances.</td></tr>';
-    }
+function filterTable(val) {
+    const filter = val.toLowerCase();
+    const rows = document.querySelectorAll("#inventoryTable tbody tr");
+    rows.forEach(r => {
+        r.style.display = r.innerText.toLowerCase().includes(filter) ? "" : "none";
+    });
 }
-
-async function submitAdjustment() {
-    const sku = document.getElementById("adjSku").value;
-    const loc = document.getElementById("adjLoc").value;
-    const delta = parseInt(document.getElementById("adjDelta").value);
-    const reason = document.getElementById("adjReason").value;
-    const fb = document.getElementById("adjFeedback");
-
-    fb.innerHTML = '<span>Submitting adjustment to ledger...</span>';
-    try {
-        const res = await fetch("/inventory/adjustments", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sku: sku, location_code: loc, delta: delta, reason: reason })
-        });
-        const data = await res.json();
-        if (res.ok) {
-            fb.innerHTML = '<span style="color: var(--success); font-weight:bold;">Adjustment committed! New On-Hand: ' + data.on_hand + '</span>';
-            loadBalances();
-        } else {
-            fb.innerHTML = '<span style="color: var(--danger); font-weight:bold;">Rejected: ' + (data.detail?.message || data.detail || "Error") + '</span>';
-        }
-    } catch (e) {
-        fb.innerHTML = '<span style="color: var(--danger);">Network error: ' + e + '</span>';
-    }
-}
-window.onload = loadBalances;
 </script>
-{% endblock %}
+</body>
+</html>

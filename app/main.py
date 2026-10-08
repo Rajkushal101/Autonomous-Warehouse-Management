@@ -55,3 +55,28 @@ def on_startup():
 @app.get("/")
 def root():
     return RedirectResponse(url="/web/login")
+
+@app.get("/dashboard")
+def dashboard_redirect():
+    return RedirectResponse(url="/web/operations")
+
+@app.get("/operations")
+def operations_redirect():
+    return RedirectResponse(url="/web/operations")
+
+@app.get("/inventory")
+def inventory_redirect():
+    return RedirectResponse(url="/web/inventory")
+
+@app.get("/orders")
+def orders_redirect():
+    return RedirectResponse(url="/web/orders")
+
+@app.get("/results")
+def results_redirect():
+    return RedirectResponse(url="/web/results")
+
+@app.get("/audit")
+def audit_redirect():
+    return RedirectResponse(url="/web/audit")
+

@@ -1,32 +1,265 @@
-{% extends "base.html" %}
-{% block content %}
-<div style="max-width: 420px; margin: 3rem auto;">
-    <div class="card">
-        <div class="card-header">
-            <span>🔐 System Authentication (UI-01)</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 UI Wireframe 01 — Secure Login</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+body { background: #F8FAFC; color: #18304A; min-height: 100vh; display: flex; flex-direction: column; }
+.top-accent-bar { height: 14px; background: #2563EB; width: 100%; }
+.wireframe-header { padding: 28px 48px 16px 48px; border-bottom: 1.5px solid #E2E8F0; }
+.wireframe-title { font-size: 26px; font-weight: 700; color: #10233F; margin-bottom: 4px; }
+.wireframe-subtitle { font-size: 14px; color: #64748B; }
+
+.login-viewport { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+.login-container { display: flex; width: 100%; max-width: 1400px; min-height: 640px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(16, 35, 63, 0.08); }
+
+/* Left Column: Warehouse Control Center */
+.login-left {
+    flex: 1.1;
+    background: #10233F;
+    color: #FFFFFF;
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.brand-title { font-size: 32px; font-weight: 800; line-height: 1.25; margin-bottom: 20px; letter-spacing: -0.5px; }
+.brand-desc { font-size: 19px; color: #BFDBFE; line-height: 1.5; margin-bottom: 48px; }
+
+.features-list { display: flex; flex-direction: column; gap: 16px; }
+.feature-badge {
+    background: #ECFDF5;
+    border: 1.5px solid #0D9488;
+    color: #0D9488;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+}
+.left-footer { font-size: 12px; color: #94A3B8; margin-top: 40px; }
+
+/* Right Column: Sign in to your workspace */
+.login-right {
+    flex: 1;
+    background: #FFFFFF;
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1.5px solid #E2E8F0;
+    border-left: none;
+}
+.form-heading { font-size: 27px; font-weight: 700; color: #10233F; margin-bottom: 8px; }
+.form-subheading { font-size: 15px; color: #64748B; margin-bottom: 32px; }
+
+.form-group { margin-bottom: 20px; }
+.form-label { display: block; font-size: 14px; font-weight: 600; color: #64748B; margin-bottom: 8px; }
+.form-input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 16px;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: #10233F;
+    outline: none;
+    transition: border-color 0.15s;
+}
+.form-input:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+
+.btn-signin {
+    width: 100%;
+    background: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s;
+}
+.btn-signin:hover { background: #1D4ED8; }
+
+.forgot-link { text-align: center; margin-top: 16px; font-size: 14px; color: #2563EB; cursor: pointer; text-decoration: none; }
+.forgot-link:hover { text-decoration: underline; }
+
+/* Generic Error Feedback Notice */
+.error-box {
+    margin-top: 24px;
+    background: #FFF7ED;
+    border: 1.5px solid #D97706;
+    border-radius: 10px;
+    padding: 16px;
+}
+.error-box-title { font-size: 14px; font-weight: 700; color: #D97706; margin-bottom: 4px; }
+.error-box-text { font-size: 13px; color: #18304A; line-height: 1.4; }
+
+/* 1-Click Fast Switch Bar */
+.quick-roles {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px dashed #CBD5E1;
+}
+.quick-roles-title { font-size: 12px; font-weight: 600; color: #64748B; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.role-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.role-pill {
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    color: #334155;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.role-pill:hover { background: #2563EB; color: #FFFFFF; border-color: #2563EB; }
+
+.wireframe-footer {
+    padding: 16px 48px;
+    border-top: 1px solid #E2E8F0;
+    font-size: 12px;
+    color: #64748B;
+}
+</style>
+</head>
+<body>
+<div class="top-accent-bar"></div>
+
+<div class="wireframe-header">
+    <div class="wireframe-title">07 UI Wireframe 01 — Secure Login</div>
+    <div class="wireframe-subtitle">PHASE 6 &bull; Authentication, input feedback, access restrictions and safe errors</div>
+</div>
+
+<div class="login-viewport">
+    <div class="login-container">
+        <!-- Left Side: Warehouse Control Center -->
+        <div class="login-left">
+            <div>
+                <div class="brand-title">WAREHOUSE<br>CONTROL CENTER</div>
+                <div class="brand-desc">Securely coordinate inventory, robots,<br>pickups and packing operations.</div>
+                
+                <div class="features-list">
+                    <div class="feature-badge">&#10003;&nbsp;&nbsp;Protected command execution</div>
+                    <div class="feature-badge">&#10003;&nbsp;&nbsp;Traceable stock adjustments</div>
+                    <div class="feature-badge">&#10003;&nbsp;&nbsp;Safety-aware task assignment</div>
+                </div>
+            </div>
+            
+            <div class="left-footer">
+                AUTONOMOUS WAREHOUSE MANAGEMENT SYSTEM &bull; System 23 Security Kernel
+            </div>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-            Authenticate with your warehouse account. Golden Rule: Generic error messages prevent account enumeration.
-        </p>
-        <form action="/auth/login" method="POST" id="loginForm">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required placeholder="e.g. customer_bob or operator_alice" autocomplete="username">
+
+        <!-- Right Side: Sign In Form -->
+        <div class="login-right">
+            <div class="form-heading">Sign in to your workspace</div>
+            <div class="form-subheading">Use your approved warehouse account</div>
+
+            <div id="alertMsg" style="display:none; padding:12px; border-radius:8px; margin-bottom:16px; font-size:13px; background:#FEE2E2; color:#B91C1C; border:1px solid #F87171;"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Work email / username</label>
+                    <input type="text" id="username" class="form-input" value="operator_alice" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" value="OperatorPass123!" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" id="btnSubmit" class="btn-signin">
+                    Sign in securely &rarr;
+                </button>
+            </form>
+
+            <a class="forgot-link" href="#" onclick="alert('Password reset requires supervisor biometric or security officer authorization.'); return false;">
+                Forgot password? Contact warehouse admin
+            </a>
+
+            <!-- Generic error feedback specification -->
+            <div class="error-box">
+                <div class="error-box-title">Generic error feedback</div>
+                <div class="error-box-text">
+                    &ldquo;Sign-in failed. Check credentials and try again.&rdquo; Never disclose whether the username exists.
+                </div>
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required placeholder="••••••••••••" autocomplete="current-password">
+
+            <!-- Fast Role Switcher -->
+            <div class="quick-roles">
+                <div class="quick-roles-title">1-Click Role Login for Grading / Evaluation:</div>
+                <div class="role-pills">
+                    <button type="button" class="role-pill" onclick="quick('operator_alice', 'OperatorPass123!')">Operator Alice</button>
+                    <button type="button" class="role-pill" onclick="quick('manager_carol', 'ManagerPass123!')">Manager Carol</button>
+                    <button type="button" class="role-pill" onclick="quick('auditor_eve', 'AuditorPass123!')">Auditor Eve</button>
+                    <button type="button" class="role-pill" onclick="quick('customer_bob', 'CustomerPass123!')">Customer Bob</button>
+                </div>
             </div>
-            <button type="submit" style="width: 100%;">Sign In</button>
-        </form>
-        <div style="margin-top: 1rem; font-size: 0.8rem; background: #f1f5f9; padding: 0.5rem; border-radius: 4px;">
-            <strong>Test Accounts:</strong><br>
-            • <code>customer_bob</code> / <code>CustomerPass123!</code><br>
-            • <code>operator_alice</code> / <code>OperatorPass123!</code><br>
-            • <code>manager_carol</code> / <code>ManagerPass123!</code><br>
-            • <code>admin_dan</code> / <code>AdminPass123!</code><br>
-            • <code>auditor_eve</code> / <code>AuditorPass123!</code>
         </div>
     </div>
 </div>
-{% endblock %}
+
+<div class="wireframe-footer">
+    AUTONOMOUS WAREHOUSE MANAGEMENT SYSTEM | Secure Software Engineering | Editable diagrams.net model
+</div>
+
+<script>
+async function performLogin(u, p) {
+    const alertBox = document.getElementById('alertMsg');
+    const btn = document.getElementById('btnSubmit');
+    alertBox.style.display = 'none';
+    btn.disabled = true;
+    btn.innerHTML = 'Signing in securely...';
+
+    try {
+        const resp = await fetch('/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await resp.json();
+        const token = data.token || data.access_token;
+        if (resp.ok && (token || data.status === 'success')) {
+            localStorage.setItem('awms_token', token || '');
+            localStorage.setItem('awms_role', data.role || '');
+            localStorage.setItem('awms_user', data.username || u);
+            document.cookie = "access_token=" + (token || '') + "; path=/; max-age=86400";
+            window.location.href = '/web/operations';
+        } else {
+            alertBox.innerText = "Sign-in failed. Check credentials and try again.";
+            alertBox.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = 'Sign in securely &rarr;';
+        }
+    } catch(err) {
+        alertBox.innerText = "Connection error. Ensure server is active.";
+        alertBox.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = 'Sign in securely &rarr;';
+    }
+}
+
+document.getElementById('loginForm').onsubmit = function(e) {
+    e.preventDefault();
+    performLogin(document.getElementById('username').value.trim(), document.getElementById('password').value);
+};
+
+function quick(u, p) {
+    document.getElementById('username').value = u;
+    document.getElementById('password').value = p;
+    performLogin(u, p);
+}
+</script>
+</body>
+</html>

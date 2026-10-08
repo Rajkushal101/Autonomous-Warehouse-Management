@@ -1,94 +1,358 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="card" style="max-width: 800px; margin: auto;">
-    <div class="card-header">
-        <span>📄 Fulfillment Results & Packing Proof (UI-04: Exam Results)</span>
-        <span class="badge badge-success">Verified Receipt</span>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 UI Wireframe 04 — Order Fulfillment</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+body { background: #F8FAFC; color: #18304A; min-height: 100vh; display: flex; flex-direction: column; }
+.top-accent-bar { height: 14px; background: #2563EB; width: 100%; }
+.wireframe-header { padding: 24px 48px 16px 48px; border-bottom: 1.5px solid #E2E8F0; }
+.wireframe-title { font-size: 26px; font-weight: 700; color: #10233F; margin-bottom: 4px; }
+.wireframe-subtitle { font-size: 14px; color: #64748B; }
 
-    <div style="margin-bottom: 1rem;">
-        <label for="orderSearchInput">Inspect Order UUID:</label>
-        <div style="display: flex; gap: 0.5rem;">
-            <input type="text" id="orderSearchInput" placeholder="Enter full order UUID">
-            <button onclick="fetchOrderReceipt()">Search</button>
-        </div>
-    </div>
+.app-layout { flex: 1; display: flex; padding: 28px 48px; gap: 28px; }
 
-    <div id="receiptContainer" style="display: none; background: #f8fafc; border: 1px solid var(--border); padding: 1.5rem; border-radius: 6px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
-            <h3 style="font-size: 1.1rem; color: var(--primary);">Delivery Confirmation Receipt</h3>
-            <span id="orderStatusBadge" class="badge"></span>
-        </div>
-        <p><strong>Order ID:</strong> <code id="recOrderId"></code></p>
-        <p><strong>Created At (UTC):</strong> <span id="recCreatedAt"></span></p>
-        <div style="margin-top: 1rem;">
-            <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Reserved & Delivered Items:</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>SKU</th>
-                        <th>Product</th>
-                        <th>Requested</th>
-                        <th>Delivered</th>
-                        <th>Task Status</th>
-                        <th>Robot AGV</th>
-                    </tr>
-                </thead>
-                <tbody id="recItemsBody"></tbody>
-            </table>
-        </div>
-        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 0.5rem;">
-            Security Invariant: Object ownership verified. Customers cannot view other customer records.
-        </div>
-    </div>
-    <div id="receiptError" style="margin-top: 1rem;"></div>
+/* Sidebar: Dark Navy #10233F */
+.sidebar {
+    width: 260px;
+    background: #10233F;
+    border-radius: 16px;
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 840px;
+}
+.sidebar-brand { font-size: 20px; font-weight: 800; color: #FFFFFF; text-align: center; letter-spacing: 0.5px; }
+.sidebar-subbrand { font-size: 11px; font-weight: 600; color: #93C5FD; text-align: center; margin-top: 4px; margin-bottom: 32px; letter-spacing: 1px; }
+
+.nav-menu { display: flex; flex-direction: column; gap: 8px; }
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #CBD5E1;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+.nav-item:hover { color: #FFFFFF; background: rgba(255,255,255,0.06); }
+.nav-item.active {
+    background: #24466E;
+    color: #FFFFFF;
+    border: 1.5px solid #3B82F6;
+    font-weight: 600;
+}
+.sidebar-footer { font-size: 12px; color: #94A3B8; text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* Main Content Area */
+.main-content { flex: 1; display: flex; flex-direction: column; gap: 24px; }
+
+/* Top Header Bar */
+.top-header-card {
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.page-title { font-size: 19px; font-weight: 800; color: #18304A; letter-spacing: -0.3px; }
+.header-actions { display: flex; align-items: center; gap: 18px; }
+.badge-auth {
+    background: #ECFDF5;
+    border: 1.5px solid #0D9488;
+    color: #0D9488;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 16px;
+}
+.user-link { font-size: 14px; color: #64748B; text-decoration: none; cursor: pointer; }
+.user-link:hover { color: #2563EB; }
+
+/* Top Dual Banner: Order Info + Robot Health */
+.order-overview-grid { display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; }
+.order-info-card {
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.order-header-line { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.order-title { font-size: 23px; font-weight: 800; color: #10233F; }
+.badge-enroute {
+    background: #ECFDF5;
+    border: 1.5px solid #0D9488;
+    color: #0D9488;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 16px;
+}
+.order-specs { font-size: 16px; color: #64748B; font-weight: 500; }
+
+.robot-health-card {
+    background: #EFF6FF;
+    border: 1.5px solid #2563EB;
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.health-label { font-size: 13px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.health-val { font-size: 19px; font-weight: 800; color: #10233F; }
+
+/* Stepper Progress Card */
+.stepper-card {
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 12px;
+    padding: 32px 36px;
+}
+.stepper-title { font-size: 20px; font-weight: 700; color: #10233F; margin-bottom: 40px; }
+
+.stepper-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    max-width: 980px;
+    margin: 0 auto 20px auto;
+}
+.stepper-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+.step-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    background: #FFFFFF;
+}
+.step-completed {
+    background: #ECFDF5;
+    border: 2px solid #0D9488;
+    color: #0D9488;
+}
+.step-pending {
+    background: #F1F5F9;
+    border: 2px solid #94A3B8;
+    color: #64748B;
+}
+.step-label { font-size: 16px; font-weight: 700; color: #10233F; margin-bottom: 4px; }
+.step-time { font-size: 13px; color: #64748B; font-weight: 500; }
+
+.stepper-line {
+    flex: 1;
+    height: 4px;
+    margin: 0 12px;
+    position: relative;
+    top: -22px;
+    z-index: 1;
+}
+.line-completed { background: #0D9488; }
+.line-pending { background: #CBD5E1; }
+
+/* Bottom Dual Cards: Confirmation & Exception Recovery */
+.fulfillment-bottom-grid { display: grid; grid-template-columns: 1.6fr 1.2fr; gap: 20px; }
+.confirm-card {
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.confirm-title { font-size: 19px; font-weight: 700; color: #10233F; margin-bottom: 12px; }
+.barcode-box {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+}
+.barcode-input {
+    flex: 1;
+    padding: 14px 18px;
+    font-size: 16px;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 10px;
+    color: #64748B;
+    background: #FFFFFF;
+    outline: none;
+}
+.btn-confirm {
+    background: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.btn-confirm:hover { background: #1D4ED8; }
+
+.exception-card {
+    background: #FFF7ED;
+    border: 1.5px solid #D97706;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.exception-title { font-size: 16px; font-weight: 700; color: #D97706; margin-bottom: 8px; }
+.exception-desc { font-size: 13px; color: #18304A; line-height: 1.5; }
+
+.wireframe-footer { padding: 16px 48px; border-top: 1px solid #E2E8F0; font-size: 12px; color: #64748B; }
+</style>
+</head>
+<body>
+<div class="top-accent-bar"></div>
+
+<div class="wireframe-header">
+    <div class="wireframe-title">10 UI Wireframe 04 — Order Fulfillment</div>
+    <div class="wireframe-subtitle">PHASE 6 &bull; Pickup, route progress, packing confirmation and exception recovery</div>
 </div>
 
-<script>
-async function fetchOrderReceipt() {
-    const orderId = document.getElementById("orderSearchInput").value.trim();
-    const container = document.getElementById("receiptContainer");
-    const err = document.getElementById("receiptError");
-    if (!orderId) return;
+<div class="app-layout">
+    <!-- Left Navigation Bar -->
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">&#9672;&nbsp;&nbsp;WAREHOUSE / OS</div>
+            <div class="sidebar-subbrand">CONTROL CENTER</div>
+            <nav class="nav-menu">
+                <a class="nav-item" href="/web/operations">Dashboard</a>
+                <a class="nav-item" href="/web/inventory">Inventory</a>
+                <a class="nav-item" href="/web/orders">Orders</a>
+                <a class="nav-item" href="/web/operations">Robots</a>
+                <a class="nav-item active" href="/web/results">Tasks</a>
+                <a class="nav-item" href="/web/audit">Audit &amp; Alerts</a>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            Role: authorized operator
+        </div>
+    </div>
 
-    err.innerHTML = '';
-    try {
-        const res = await fetch("/orders/" + orderId);
-        const data = await res.json();
-        if (res.ok) {
-            container.style.display = "block";
-            document.getElementById("recOrderId").innerText = data.order_id;
-            document.getElementById("recCreatedAt").innerText = data.created_at;
-            const badge = document.getElementById("orderStatusBadge");
-            badge.innerText = data.status;
-            badge.className = "badge " + (data.status === "FULFILLED" ? "badge-success" : "badge-info");
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Status Bar -->
+        <div class="top-header-card">
+            <div class="page-title">TASKS / LIVE OPERATIONS</div>
+            <div class="header-actions">
+                <div class="badge-auth">Authenticated</div>
+                <a class="user-link" href="/web/login">Operator &bull; Logout</a>
+            </div>
+        </div>
 
-            const tb = document.getElementById("recItemsBody");
-            tb.innerHTML = data.items.map(it => `
-                <tr>
-                    <td><strong>${it.sku}</strong></td>
-                    <td>${it.product_name}</td>
-                    <td>${it.requested_qty}</td>
-                    <td><strong style="color: var(--success);">${it.delivered_qty}</strong></td>
-                    <td><span class="badge ${it.task_state === 'COMPLETED' ? 'badge-success' : 'badge-warning'}">${it.task_state}</span></td>
-                    <td><code>${it.assigned_robot || 'Not assigned'}</code></td>
-                </tr>
-            `).join("");
-        } else {
-            container.style.display = "none";
-            err.innerHTML = '<div class="alert alert-error">Order Not Found or Access Denied (IDOR Protection)</div>';
-        }
-    } catch (e) {
-        err.innerHTML = '<div class="alert alert-error">Network error</div>';
-    }
-}
+        <!-- Top Order & Robot Banner -->
+        <div class="order-overview-grid">
+            <div class="order-info-card">
+                <div class="order-header-line">
+                    <div class="order-title">Order ORD-00721 &bull; Active fulfillment</div>
+                    <div class="badge-enroute">EN ROUTE TO PACK</div>
+                </div>
+                <div class="order-specs">Robot R-008 &bull; SKU-101 &times; 3 &bull; From A-01-04 &rarr; PACK-02</div>
+            </div>
 
-// Auto-fill from URL params
-const urlParams = new URLSearchParams(window.location.search);
-const paramId = urlParams.get('order_id');
-if (paramId) {
-    document.getElementById("orderSearchInput").value = paramId;
-    fetchOrderReceipt();
-}
-</script>
-{% endblock %}
+            <div class="robot-health-card">
+                <div class="health-label">ROBOT HEALTH</div>
+                <div class="health-val">63% battery &bull; Clear path</div>
+            </div>
+        </div>
+
+        <!-- Stepper Progress Card -->
+        <div class="stepper-card">
+            <div class="stepper-title">Task progress &mdash; acknowledgments recorded in audit log</div>
+
+            <div class="stepper-container">
+                <!-- Step 1 -->
+                <div class="stepper-step">
+                    <div class="step-circle step-completed">1</div>
+                    <div class="step-label">Order accepted</div>
+                    <div class="step-time">09:20</div>
+                </div>
+
+                <div class="stepper-line line-completed"></div>
+
+                <!-- Step 2 -->
+                <div class="stepper-step">
+                    <div class="step-circle step-completed">2</div>
+                    <div class="step-label">Item picked</div>
+                    <div class="step-time">09:21</div>
+                </div>
+
+                <div class="stepper-line line-completed"></div>
+
+                <!-- Step 3 -->
+                <div class="stepper-step">
+                    <div class="step-circle step-completed">3</div>
+                    <div class="step-label">In transit</div>
+                    <div class="step-time">09:23</div>
+                </div>
+
+                <div class="stepper-line line-pending"></div>
+
+                <!-- Step 4 -->
+                <div class="stepper-step">
+                    <div class="step-circle step-pending">4</div>
+                    <div class="step-label">Packed &amp; verified</div>
+                    <div class="step-time">Pending</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Dual Cards: Packing Confirmation & Conflict Notice -->
+        <div class="fulfillment-bottom-grid">
+            <div class="confirm-card">
+                <div>
+                    <div class="confirm-title">Packing confirmation</div>
+                    <div style="font-size:14px; color:#64748B; margin-bottom:8px;">Scan SKU / task barcode:</div>
+                </div>
+                <div class="barcode-box">
+                    <input type="text" class="barcode-input" value="SKU-101 &bull; TASK-203" readonly>
+                    <button class="btn-confirm" onclick="alert('Order ORD-00721 Packed & Verified! Delivery receipt signed.')">
+                        Confirm drop + pack
+                    </button>
+                </div>
+            </div>
+
+            <div class="exception-card">
+                <div class="exception-title">Collision / command conflict</div>
+                <div class="exception-desc">
+                    Emergency-stop and hold task. Resolve lease conflict, verify obstacle clearance and re-dispatch by authorized operator.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="wireframe-footer">
+    AUTONOMOUS WAREHOUSE MANAGEMENT SYSTEM | Secure Software Engineering | Editable diagrams.net model
+</div>
+</body>
+</html>

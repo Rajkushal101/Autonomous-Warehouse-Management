@@ -1,174 +1,423 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="card">
-    <div class="card-header">
-        <span>🤖 Warehouse Operations & Robot Fleet Console (UI-05)</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>09 UI Wireframe 03 — Robot Management</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+body { background: #F8FAFC; color: #18304A; min-height: 100vh; display: flex; flex-direction: column; }
+.top-accent-bar { height: 14px; background: #2563EB; width: 100%; }
+.wireframe-header { padding: 24px 48px 16px 48px; border-bottom: 1.5px solid #E2E8F0; }
+.wireframe-title { font-size: 26px; font-weight: 700; color: #10233F; margin-bottom: 4px; }
+.wireframe-subtitle { font-size: 14px; color: #64748B; }
+
+.app-layout { flex: 1; display: flex; padding: 28px 48px; gap: 28px; }
+
+/* Sidebar: Dark Navy #10233F */
+.sidebar {
+    width: 260px;
+    background: #10233F;
+    border-radius: 16px;
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 840px;
+}
+.sidebar-brand { font-size: 20px; font-weight: 800; color: #FFFFFF; text-align: center; letter-spacing: 0.5px; }
+.sidebar-subbrand { font-size: 11px; font-weight: 600; color: #93C5FD; text-align: center; margin-top: 4px; margin-bottom: 32px; letter-spacing: 1px; }
+
+.nav-menu { display: flex; flex-direction: column; gap: 8px; }
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border-radius: 10px;
+    color: #CBD5E1;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+.nav-item:hover { color: #FFFFFF; background: rgba(255,255,255,0.06); }
+.nav-item.active {
+    background: #24466E;
+    color: #FFFFFF;
+    border: 1.5px solid #3B82F6;
+    font-weight: 600;
+}
+.sidebar-footer { font-size: 12px; color: #94A3B8; text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* Main Content Area */
+.main-content { flex: 1; display: flex; flex-direction: column; gap: 24px; }
+
+/* Top Header Bar */
+.top-header-card {
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.page-title { font-size: 19px; font-weight: 800; color: #18304A; letter-spacing: -0.3px; }
+.header-actions { display: flex; align-items: center; gap: 18px; }
+.badge-auth {
+    background: #ECFDF5;
+    border: 1.5px solid #0D9488;
+    color: #0D9488;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 16px;
+}
+.user-link { font-size: 14px; color: #64748B; text-decoration: none; cursor: pointer; }
+.user-link:hover { color: #2563EB; }
+
+/* 4 Metric Cards */
+.metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.metric-card {
+    background: #FFFFFF;
+    border: 1.5px solid #DDE6F1;
+    border-radius: 12px;
+    padding: 20px 24px;
+}
+.metric-label { font-size: 13px; font-weight: 700; color: #64748B; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+.metric-value { font-size: 32px; font-weight: 800; color: #10233F; }
+
+/* Fleet Status Table Card */
+.table-card {
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 12px;
+    padding: 24px 28px;
+}
+.table-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.table-title { font-size: 21px; font-weight: 700; color: #10233F; }
+.btn-enroll {
+    background: #EFF6FF;
+    border: 1.5px solid #2563EB;
+    color: #2563EB;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 7px 18px;
+    border-radius: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+.btn-enroll:hover { background: #2563EB; color: #FFFFFF; }
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+    background: #E2E8F0;
+    color: #10233F;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+    padding: 14px 18px;
+    border: 1px solid #E2E8F0;
+}
+.data-table td {
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #18304A;
+    border-bottom: 1px solid #E2E8F0;
+}
+.data-table tr:nth-child(even) td { background: #F8FAFC; }
+.data-table tr:nth-child(odd) td { background: #FFFFFF; }
+
+.btn-ctrl {
+    background: none;
+    border: none;
+    color: #2563EB;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Spatial Map and Telemetry Card */
+.map-card {
+    background: #FFFFFF;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 12px;
+    padding: 24px 28px;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+    background: #F1F5F9;
+    padding: 14px;
+    border-radius: 10px;
+    border: 1px solid #CBD5E1;
+    max-width: 520px;
+    margin: 0 auto;
+    aspect-ratio: 1;
+}
+.grid-cell {
+    background: #FFFFFF;
+    border-radius: 6px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid #E2E8F0;
+    position: relative;
+}
+.cell-shelf { background: #DBEAFE; border-color: #3B82F6; color: #1D4ED8; font-weight: 700; }
+.cell-bay { background: #FEF3C7; border-color: #F59E0B; color: #B45309; font-weight: 700; }
+.cell-dock { background: #D1FAE5; border-color: #10B981; color: #047857; font-weight: 700; }
+.cell-obs { background: #94A3B8; border-color: #64748B; color: #FFFFFF; font-weight: 700; }
+
+.robot-marker {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    animation: pulse 2s infinite;
+}
+.r-active { background: #0D9488; }
+.r-idle { background: #2563EB; }
+@keyframes pulse { 0% { transform: scale(0.95); } 50% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
+
+/* Bottom Dual Cards (Safeguards + Emergency Stop) */
+.bottom-dual-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+.safeguards-card {
+    background: #ECFDF5;
+    border: 1.5px solid #0D9488;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.safeguards-title { font-size: 15px; font-weight: 700; color: #0D9488; margin-bottom: 6px; }
+.safeguards-desc { font-size: 13px; color: #18304A; line-height: 1.4; }
+
+.estop-card {
+    background: #FEF2F2;
+    border: 1.5px solid #DC2626;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.estop-card:hover { background: #FEE2E2; }
+.estop-title { font-size: 16px; font-weight: 800; color: #DC2626; line-height: 1.3; }
+.estop-sub { font-size: 11px; font-weight: 600; color: #991B1B; margin-top: 4px; }
+
+.wireframe-footer { padding: 16px 48px; border-top: 1px solid #E2E8F0; font-size: 12px; color: #64748B; }
+</style>
+</head>
+<body>
+<div class="top-accent-bar"></div>
+
+<div class="wireframe-header">
+    <div class="wireframe-title">09 UI Wireframe 03 — Robot Management</div>
+    <div class="wireframe-subtitle">PHASE 6 &bull; Enrollment, health, battery state, task leasing and emergency controls</div>
+</div>
+
+<div class="app-layout">
+    <!-- Left Navigation Bar -->
+    <div class="sidebar">
         <div>
-            <button class="btn btn-danger" onclick="togglePause('Emergency manual stop triggered')">HALT FLEET</button>
-            <button class="btn" onclick="resumeFleet()" style="background: var(--success);">RESUME</button>
+            <div class="sidebar-brand">&#9672;&nbsp;&nbsp;WAREHOUSE / OS</div>
+            <div class="sidebar-subbrand">CONTROL CENTER</div>
+            <nav class="nav-menu">
+                <a class="nav-item" href="/web/operations">Dashboard</a>
+                <a class="nav-item" href="/web/inventory">Inventory</a>
+                <a class="nav-item" href="/web/orders">Orders</a>
+                <a class="nav-item active" href="/web/operations">Robots</a>
+                <a class="nav-item" href="/web/results">Tasks</a>
+                <a class="nav-item" href="/web/audit">Audit &amp; Alerts</a>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            Role: authorized operator
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-        <div>
-            <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Autonomous Fleet Status</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Serial</th>
-                        <th>Status</th>
-                        <th>Battery</th>
-                        <th>Coords</th>
-                        <th>Heartbeat</th>
-                    </tr>
-                </thead>
-                <tbody id="robotsTableBody">
-                    <tr><td colspan="5">Loading robots...</td></tr>
-                </tbody>
-            </table>
-
-            <h3 style="font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.5rem;">Task Queue & Dispatch</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Task ID</th>
-                        <th>State</th>
-                        <th>Assigned AGV</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tasksTableBody">
-                    <tr><td colspan="4">Loading queued tasks...</td></tr>
-                </tbody>
-            </table>
-            <div id="dispatchFeedback" style="margin-top: 0.5rem; font-size: 0.85rem;"></div>
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Status Bar -->
+        <div class="top-header-card">
+            <div class="page-title">ROBOTS / LIVE OPERATIONS</div>
+            <div class="header-actions">
+                <div class="badge-auth">Authenticated</div>
+                <a class="user-link" href="/web/login">Operator &bull; Logout</a>
+            </div>
         </div>
 
-        <div>
-            <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Warehouse 10x10 Grid Occupancy</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-                Blue: Storage Shelf | Yellow: Packing Bay | Grey: Shelving Obstacle | Green: Active Robot
-            </p>
-            <div class="grid-map" id="warehouseGrid">
-                <!-- 10x10 generated by JS -->
+        <!-- 4 Metric Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">REGISTERED</div>
+                <div class="metric-value">24</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">AVAILABLE</div>
+                <div class="metric-value" style="color:#0D9488;">16</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">BUSY</div>
+                <div class="metric-value">6</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">OFFLINE / FAULT</div>
+                <div class="metric-value" style="color:#DC2626;">2</div>
+            </div>
+        </div>
+
+        <!-- Robot Fleet Table -->
+        <div class="table-card">
+            <div class="table-header-row">
+                <div class="table-title">Fleet status and task ownership</div>
+                <button class="btn-enroll" onclick="alert('Enrollment API: mTLS x509 cryptographic certificate issued for new AGV.')">+ Enroll Robot</button>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Robot ID</th>
+                        <th>Certificate</th>
+                        <th>Battery</th>
+                        <th>State</th>
+                        <th>Active task</th>
+                        <th>Control</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>R-001 (AGV-01)</strong></td>
+                        <td>Valid &bull; mTLS</td>
+                        <td><strong style="color:#0D9488;">92%</strong></td>
+                        <td><span style="color:#0D9488; font-weight:700;">BUSY</span></td>
+                        <td>TASK-002</td>
+                        <td><button class="btn-ctrl" onclick="alert('Inspecting AGV-01 telemetry and lease lease_id_941')">Inspect</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>R-008 (AGV-02)</strong></td>
+                        <td>Valid &bull; mTLS</td>
+                        <td><strong style="color:#0D9488;">85%</strong></td>
+                        <td><span style="color:#2563EB; font-weight:700;">AVAILABLE</span></td>
+                        <td>&mdash;</td>
+                        <td><button class="btn-ctrl" onclick="alert('Task lease assigned to AGV-02.')">Assign task</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>R-014</strong></td>
+                        <td>Valid &bull; mTLS</td>
+                        <td><strong style="color:#D97706;">22%</strong></td>
+                        <td><span style="color:#D97706; font-weight:700;">CHARGING</span></td>
+                        <td>&mdash;</td>
+                        <td><button class="btn-ctrl" onclick="alert('Dock telemetry: 24V 15A active charge.')">View health</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>R-022</strong></td>
+                        <td><span style="color:#DC2626; font-weight:700;">Expired</span></td>
+                        <td>&mdash;</td>
+                        <td><span style="color:#DC2626; font-weight:700;">ISOLATED</span></td>
+                        <td>&mdash;</td>
+                        <td><button class="btn-ctrl" onclick="alert('Quarantine active: Certificate expired or unauthorized firmware probe.')">Investigate</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 10x10 Spatial Map View -->
+        <div class="map-card">
+            <div class="table-header-row">
+                <div class="table-title">Warehouse Floor (10&times;10 Spatial Grid Telemetry)</div>
+                <div style="font-size:12px; color:#64748B;">AGV Coordinates &bull; Obstacle Clearance Verified</div>
+            </div>
+
+            <div id="gridMap" class="grid-container mb-3"></div>
+
+            <div style="display:flex; justify-content:center; gap:20px; font-size:12px; color:#475569; padding-top:14px; border-top:1px solid #E2E8F0; margin-top:14px;">
+                <span><span style="display:inline-block; width:12px; height:12px; background:#DBEAFE; border:1px solid #3B82F6; border-radius:2px; vertical-align:middle; margin-right:4px;"></span> Storage Shelves</span>
+                <span><span style="display:inline-block; width:12px; height:12px; background:#FEF3C7; border:1px solid #F59E0B; border-radius:2px; vertical-align:middle; margin-right:4px;"></span> Packing Bays</span>
+                <span><span style="display:inline-block; width:12px; height:12px; background:#D1FAE5; border:1px solid #10B981; border-radius:2px; vertical-align:middle; margin-right:4px;"></span> Charging Docks</span>
+                <span><span style="display:inline-block; width:12px; height:12px; background:#94A3B8; border-radius:2px; vertical-align:middle; margin-right:4px;"></span> Obstacles</span>
+                <span><span style="display:inline-block; width:12px; height:12px; background:#0D9488; border-radius:50%; vertical-align:middle; margin-right:4px;"></span> R1 (Active)</span>
+                <span><span style="display:inline-block; width:12px; height:12px; background:#2563EB; border-radius:50%; vertical-align:middle; margin-right:4px;"></span> R2 (Docked)</span>
+            </div>
+        </div>
+
+        <!-- Bottom Dual Cards: Safeguards & Emergency Stop -->
+        <div class="bottom-dual-grid">
+            <div class="safeguards-card">
+                <div class="safeguards-title">Command safeguards</div>
+                <div class="safeguards-desc">
+                    Each robot accepts one non-expired task lease, with ordered authenticated command IDs. Collision-free path reservations guaranteed by spatial scheduler.
+                </div>
+            </div>
+
+            <div class="estop-card" onclick="alert('HARDWARE EMERGENCY STOP ACTIVATED: Broadcast signal sent. All AGV traction motors locked.')">
+                <div class="estop-title">EMERGENCY STOP</div>
+                <div class="estop-sub">ADMIN + INCIDENT LOG</div>
             </div>
         </div>
     </div>
 </div>
 
+<div class="wireframe-footer">
+    AUTONOMOUS WAREHOUSE MANAGEMENT SYSTEM | Secure Software Engineering | Editable diagrams.net model
+</div>
+
 <script>
-async function loadFleet() {
-    try {
-        const res = await fetch("/operations/fleet");
-        if (!res.ok) return;
-        const data = await res.json();
-
-        // Render Robots
-        const rbody = document.getElementById("robotsTableBody");
-        rbody.innerHTML = data.robots.map(r => `
-            <tr>
-                <td><strong>${r.serial}</strong></td>
-                <td><span class="badge ${r.status === 'IDLE' ? 'badge-success' : (r.status === 'BUSY' ? 'badge-warning' : 'badge-danger')}">${r.status}</span></td>
-                <td>${r.battery_pct}%</td>
-                <td>(${r.position[0]}, ${r.position[1]})</td>
-                <td><small>${r.last_seen.substring(11,19)}</small></td>
-            </tr>
-        `).join("");
-
-        // Render Tasks
-        const tbody = document.getElementById("tasksTableBody");
-        tbody.innerHTML = data.tasks.map(t => `
-            <tr>
-                <td><code>${t.id.substring(0,8)}...</code></td>
-                <td><span class="badge ${t.state === 'COMPLETED' ? 'badge-success' : 'badge-info'}">${t.state}</span></td>
-                <td>${t.robot_id ? t.robot_id.substring(0,8) : 'Unassigned'}</td>
-                <td>
-                    ${t.state === 'QUEUED' ? `<button onclick="assignFirstIdle('${t.id}')" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Dispatch AGV</button>` : '—'}
-                </td>
-            </tr>
-        `).join("");
-
-        renderGrid(data.robots);
-    } catch(e) {}
-}
-
-function renderGrid(robots) {
-    const grid = document.getElementById("warehouseGrid");
-    grid.innerHTML = "";
-    const robotMap = {};
-    robots.forEach(r => { robotMap[`${r.position[0]},${r.position[1]}`] = r.serial; });
+function renderGrid() {
+    const el = document.getElementById('gridMap');
+    el.innerHTML = '';
+    const shelves = [[1,1],[1,2],[1,3],[2,1],[2,2],[2,3],[6,1],[6,2],[6,3],[7,1],[7,2],[7,3]];
+    const bays = [[1,8],[2,8]];
+    const docks = [[0,0],[9,0]];
+    const obstacles = [[4,4],[4,5],[5,4],[5,5]];
 
     for (let y = 0; y < 10; y++) {
         for (let x = 0; x < 10; x++) {
-            const cell = document.createElement("div");
-            cell.className = "grid-cell";
-            const key = `${x},${y}`;
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell';
 
-            if (robotMap[key]) {
-                cell.className += " cell-robot";
-                cell.innerText = robotMap[key].substring(4,6);
-            } else if ((x === 2 && y === 4) || (x === 5 && y === 5)) {
-                cell.className += " cell-storage";
-                cell.innerText = "S";
-            } else if (x === 1 && y === 9) {
-                cell.className += " cell-packing";
-                cell.innerText = "P";
-            } else if ((x === 3 && y === 3) || (x === 3 && y === 4) || (x === 7 && y === 7)) {
-                cell.className += " cell-blocked";
-                cell.innerText = "#";
+            if (x === 2 && y === 4) {
+                cell.innerHTML = '<div class="robot-marker r-active">R1</div>';
+            } else if (x === 0 && y === 0) {
+                cell.innerHTML = '<div class="robot-marker r-idle">R2</div>';
+            } else if (shelves.some(([sx,sy]) => sx===x && sy===y)) {
+                cell.classList.add('cell-shelf');
+                cell.innerText = 'SH';
+            } else if (bays.some(([bx,by]) => bx===x && by===y)) {
+                cell.classList.add('cell-bay');
+                cell.innerText = 'BAY';
+            } else if (docks.some(([dx,dy]) => dx===x && dy===y)) {
+                cell.classList.add('cell-dock');
+                cell.innerText = 'DCK';
+            } else if (obstacles.some(([ox,oy]) => ox===x && oy===y)) {
+                cell.classList.add('cell-obs');
+                cell.innerText = 'X';
+            } else {
+                cell.innerHTML = `<span style="opacity:0.25">${x},${y}</span>`;
             }
-            grid.appendChild(cell);
+            el.appendChild(cell);
         }
     }
 }
-
-async function assignFirstIdle(taskId) {
-    const fb = document.getElementById("dispatchFeedback");
-    fb.innerHTML = '<span>Assigning available idle robot...</span>';
-    try {
-        const fleetRes = await fetch("/operations/fleet");
-        const data = await fleetRes.json();
-        const idleRobot = data.robots.find(r => r.status === 'IDLE');
-        if (!idleRobot) {
-            fb.innerHTML = '<span style="color: var(--danger);">No eligible idle robots available!</span>';
-            return;
-        }
-
-        const idemp = 'assign-' + Math.random().toString(36).substring(2, 10);
-        const res = await fetch("/operations/tasks/assign", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Idempotency-Key": idemp },
-            body: JSON.stringify({ task_id: taskId, robot_id: idleRobot.id })
-        });
-        const resData = await res.json();
-        if (res.ok) {
-            fb.innerHTML = '<span style="color: var(--success); font-weight:bold;">Task bound to ' + resData.robot_serial + '! Command #1 Issued.</span>';
-            loadFleet();
-        } else {
-            fb.innerHTML = '<span style="color: var(--danger); font-weight:bold;">Assignment Rejected: ' + (resData.detail?.message || resData.detail) + '</span>';
-        }
-    } catch (e) {
-        fb.innerHTML = '<span style="color: var(--danger);">Network error</span>';
-    }
-}
-
-async function togglePause(reason) {
-    await fetch("/operations/pause", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reason: reason })
-    });
-    alert("Warehouse fleet has been halted!");
-    loadFleet();
-}
-
-async function resumeFleet() {
-    await fetch("/operations/resume", { method: "POST" });
-    alert("Warehouse operations resumed.");
-    loadFleet();
-}
-
-setInterval(loadFleet, 3000);
-window.onload = loadFleet;
+renderGrid();
 </script>
-{% endblock %}
+</body>
+</html>
