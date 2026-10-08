@@ -179,12 +179,13 @@ bandit -r app/ -c bandit.yaml
 ### Step 5: Launch the Application
 Start the FastAPI application with Uvicorn:
 ```bash
-uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn app.main:app --host 127.0.0.1 --port 8080 --reload
 ```
 Access the web user interface in a browser:
-* **Web UI URL:** `http://127.0.0.1:8000/web/login`
-* **Swagger API Docs:** `http://127.0.0.1:8000/docs`
-* **Health Check:** `http://127.0.0.1:8000/health`
+* **Web UI URL:** `http://127.0.0.1:8080/web/login`
+* **Swagger API Docs:** `http://127.0.0.1:8080/docs`
+* **Health Check:** `http://127.0.0.1:8080/health`
+*(Note: Port 8080 is used by default to prevent conflict with local Splunk Enterprise running on 8000).*
 
 ### Step 6: Background Dispatcher Worker Execution
 In a separate terminal, launch the autonomous AGV simulation worker:

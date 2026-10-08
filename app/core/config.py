@@ -4,7 +4,7 @@ from pydantic import Field
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = Field(default="development")
-    PORT: int = Field(default=8000)
+    PORT: int = Field(default=8080)
     HOST: str = Field(default="127.0.0.1")
     LOG_LEVEL: str = Field(default="INFO")
 

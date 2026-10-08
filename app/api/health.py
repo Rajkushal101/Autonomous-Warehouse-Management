@@ -7,6 +7,14 @@ from app.core.security import get_utc_now
 
 router = APIRouter(tags=["Health & Telemetry"])
 
+@router.get("/health")
+def health_check(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "HEALTHY", "database": "CONNECTED", "timestamp": get_utc_now().isoformat()}
+    except Exception as e:
+        return {"status": "UNHEALTHY", "database": "FAILED", "error": str(e)}
+
 @router.get("/health/live")
 def liveness_probe():
     return {"status": "LIVE", "timestamp": get_utc_now().isoformat()}

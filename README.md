@@ -47,11 +47,12 @@ bandit -r app/ -c bandit.yaml
 
 ### Step 5: Start Application Server
 ```bash
-uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn app.main:app --host 127.0.0.1 --port 8080 --reload
 ```
-* **Web UI URL:** [http://127.0.0.1:8000/web/login](http://127.0.0.1:8000/web/login)
-* **Interactive API Docs (Swagger):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-* **Health Endpoint:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+* **Web UI URL:** [http://127.0.0.1:8080/web/login](http://127.0.0.1:8080/web/login)
+* **Interactive API Docs (Swagger):** [http://127.0.0.1:8080/docs](http://127.0.0.1:8080/docs)
+* **Health Endpoint:** [http://127.0.0.1:8080/health](http://127.0.0.1:8080/health)
+*(Note: Port 8080 is used by default to prevent conflict with local Splunk Enterprise running on 8000).*
 
 ### Step 6: Start Autonomous AGV Dispatcher (Separate Terminal)
 ```bash

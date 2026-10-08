@@ -32,7 +32,7 @@ services:
       DEVICE_TOKEN_PEPPER: change_me_to_strong_secret_key_pepper_64chars_in_production
       SECURE_COOKIES: "false"
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8080:8000"
     networks:
       - internal_network
     restart: unless-stopped
