@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span>🛡️ Security Audit & Forensics Log (UI-06)</span>
+        <span class="badge badge-danger">Append-Only Forensic Trail</span>
+    </div>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Immutable event log recording all authentication, role permissions, inventory mutations, and robot dispatches. Read-only for AUDITOR and ADMIN.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp (UTC)</th>
+                <th>Actor Type</th>
+                <th>Action</th>
+                <th>Target</th>
+                <th>Outcome</th>
+                <th>Reason Code</th>
+                <th>Metadata</th>
+            </tr>
+        </thead>
+        <tbody id="auditTableBody">
+            <tr><td colspan="7" style="text-align: center;">Loading security audit trail...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+async function loadAudit() {
+    try {
+        const res = await fetch("/audit/events?limit=50");
+        const tb = document.getElementById("auditTableBody");
+        if (res.ok) {
+            const list = await res.json();
+            tb.innerHTML = list.map(e => `
+                <tr>
+                    <td><code>${e.timestamp.substring(0,19)}</code></td>
+                    <td><span class="badge badge-info">${e.actor_type}</span></td>
+                    <td><strong>${e.action}</strong></td>
+                    <td>${e.target_entity}</td>
+                    <td><span class="badge ${e.outcome === 'SUCCESS' ? 'badge-success' : 'badge-danger'}">${e.outcome}</span></td>
+                    <td><small>${e.reason_code}</small></td>
+                    <td><small style="color: var(--text-muted);">${JSON.stringify(e.metadata)}</small></td>
+                </tr>
+            `).join("");
+        } else {
+            tb.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--danger);">Access Denied (Requires AUDITOR or ADMIN role)</td></tr>';
+        }
+    } catch(e) {
+        document.getElementById("auditTableBody").innerHTML = '<tr><td colspan="7">Failed to load audit records.</td></tr>';
+    }
+}
+window.onload = loadAudit;
+</script>
+{% endblock %}

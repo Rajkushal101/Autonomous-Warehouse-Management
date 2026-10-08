@@ -1,0 +1,184 @@
+@startuml
+skinparam linetype ortho
+skinparam roundcorner 5
+skinparam class {
+    BackgroundColor white
+    ArrowColor #334155
+    BorderColor #475569
+}
+
+entity "users" as User {
+    * id : UUID [PK]
+    --
+    * username : VARCHAR [UQ]
+    * password_hash : VARCHAR
+    * role : ENUM
+    * is_active : BOOL
+    * created_at : TIMESTAMPTZ
+}
+
+entity "sessions" as Session {
+    * id : UUID [PK]
+    --
+    * user_id : UUID [FK]
+    * token_digest : VARCHAR(64) [UQ]
+    * csrf_token : VARCHAR(64)
+    * expires_at : TIMESTAMPTZ
+    revoked_at : TIMESTAMPTZ
+}
+
+entity "warehouses" as Warehouse {
+    * id : UUID [PK]
+    --
+    * name : VARCHAR
+    * grid_width : INT
+    * grid_height : INT
+}
+
+entity "warehouse_controls" as WarehouseControl {
+    * warehouse_id : UUID [PK, FK]
+    --
+    * paused : BOOL
+    stop_reason : TEXT
+    * current_tick : BIGINT
+    * version : INT
+}
+
+entity "locations" as Location {
+    * id : UUID [PK]
+    --
+    * warehouse_id : UUID [FK]
+    * code : VARCHAR
+    * type : ENUM
+    * x : INT
+    * y : INT
+    * is_blocked : BOOL
+}
+
+entity "products" as Product {
+    * id : UUID [PK]
+    --
+    * sku : VARCHAR(64) [UQ]
+    * name : VARCHAR
+    * weight : NUMERIC (>0)
+    * is_active : BOOL
+}
+
+entity "inventory_balances" as Balance {
+    * id : UUID [PK]
+    --
+    * warehouse_id : UUID [FK]
+    * product_id : UUID [FK]
+    * location_id : UUID [FK]
+    * on_hand : INT (>=0)
+    * reserved : INT (>=0)
+}
+
+entity "orders" as Order {
+    * id : UUID [PK]
+    --
+    * customer_id : UUID [FK]
+    * warehouse_id : UUID [FK]
+    * status : ENUM
+    * created_at : TIMESTAMPTZ
+    * version : INT
+}
+
+entity "order_items" as OrderItem {
+    * id : UUID [PK]
+    --
+    * order_id : UUID [FK]
+    * product_id : UUID [FK]
+    * requested_qty : INT (>0)
+    * delivered_qty : INT
+}
+
+entity "stock_reservations" as Reservation {
+    * id : UUID [PK]
+    --
+    * order_item_id : UUID [FK]
+    * balance_id : UUID [FK]
+    * qty : INT
+    * state : ENUM
+}
+
+entity "robots" as Robot {
+    * id : UUID [PK]
+    --
+    * warehouse_id : UUID [FK]
+    current_location_id : UUID [FK]
+    * serial_number : VARCHAR [UQ]
+    * token_digest : VARCHAR(64) [UQ]
+    * status : ENUM
+    * battery_pct : INT
+    * capacity_kg : NUMERIC
+    * last_seen : TIMESTAMPTZ
+}
+
+entity "tasks" as Task {
+    * id : UUID [PK]
+    --
+    * reservation_id : UUID [FK, UQ]
+    robot_id : UUID [FK, PARTIAL_UQ]
+    * pickup_location_id : UUID [FK]
+    * drop_location_id : UUID [FK]
+    * state : ENUM
+    resume_state : VARCHAR
+    * quantity : INT
+}
+
+entity "commands" as Command {
+    * id : UUID [PK]
+    --
+    * robot_id : UUID [FK]
+    * task_id : UUID [FK]
+    * sequence_number : INT
+    * command_type : ENUM
+    * expected_state : VARCHAR
+    * status : ENUM
+}
+
+entity "inventory_movements" as Movement {
+    * id : UUID [PK]
+    --
+    product_id : UUID [FK]
+    from_location_id : UUID [FK]
+    to_location_id : UUID [FK]
+    reservation_id : UUID [FK]
+    * qty : INT
+    * movement_type : ENUM
+    * source_event_id : UUID [UQ]
+    * actor_id : UUID
+    * created_at : TIMESTAMPTZ
+}
+
+entity "audit_events" as Audit {
+    * id : UUID [PK]
+    --
+    * timestamp : TIMESTAMPTZ
+    * actor_id : UUID
+    * actor_type : VARCHAR
+    * action : VARCHAR
+    * target_entity : VARCHAR
+    * target_id : UUID
+    * outcome : ENUM
+    * reason_code : VARCHAR
+    metadata_json : JSONB
+}
+
+User ||--o{ Session : has
+User ||--o{ Order : places
+Warehouse ||--|| WarehouseControl : controls
+Warehouse ||--o{ Location : contains
+Warehouse ||--o{ Robot : operates
+Product ||--o{ Balance : stocked_in
+Location ||--o{ Balance : locates
+Product ||--o{ OrderItem : ordered_as
+Order ||--|{ OrderItem : contains
+OrderItem ||--o{ Reservation : reserves
+Balance ||--o{ Reservation : source_for
+Reservation ||--|| Task : generates
+Robot ||--o{ Task : performs
+Robot ||--o{ Command : receives
+Task ||--o{ Command : dispatches
+@enduml

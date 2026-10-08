@@ -1,0 +1,60 @@
+@startuml
+skinparam roundcorner 10
+skinparam defaultFontName "Segoe UI"
+
+rectangle "E1: Customer Browser" as E1 #e0f2fe
+rectangle "E2: Operator Browser" as E2 #fef3c7
+rectangle "E4: Robot AGV Simulator" as E4 #e2e8f0
+rectangle "E3: Auditor Browser" as E3 #dcfce7
+
+package "Trust Boundary TB1 (Internet Ingress)" {
+    rectangle "P1: Authentication & Access Policy" as P1 #ffffff
+    rectangle "P3: Order Validation & Stock Reservation" as P3 #ffffff
+    rectangle "P2: Inventory & Catalog Management" as P2 #ffffff
+    rectangle "P5: Fulfillment Evaluation & Results" as P5 #ffffff
+}
+
+package "Trust Boundary TB3 (Device Network)" {
+    rectangle "P4.1: Robot Eligibility & Dispatch" as P4_1 #ffffff
+    rectangle "P4.2: Step Navigation & Collision Check" as P4_2 #ffffff
+    rectangle "P4.3: Pick & Drop Ledger Commit" as P4_3 #ffffff
+}
+
+package "Trust Boundary TB2 (Data Layer)" {
+    database "D1: Users & Sessions" as D1 #f1f5f9
+    database "D2: Balances & Movements Ledger" as D2 #f1f5f9
+    database "D3: Orders & Tasks" as D3 #f1f5f9
+    database "D4: Robot States & Commands" as D4 #f1f5f9
+}
+
+package "Trust Boundary TB5 (Audit Sink)" {
+    rectangle "P6: Audit & Monitoring" as P6 #ffffff
+    database "D5: Security Audit Events" as D5 #fee2e2
+}
+
+E1 --> P1 : F01: Credentials
+P1 --> D1 : Verify digest
+E1 --> P3 : F03: Order (Idempotency Key)
+P3 --> D2 : Lock & Reserve Stock
+P3 --> D3 : Insert Order & Queued Task
+
+E2 --> P4_1 : F05: Dispatch Request
+P4_1 --> D4 : Check Robot Status / Lock
+P4_1 --> P4_2 : Generate Command Sequence
+
+E4 --> P4_2 : F07: Step Telemetry & Heartbeat
+P4_2 --> D4 : Verify Coordinate Occupancy
+E4 --> P4_3 : F07: Drop Ack at Packing Area
+P4_3 --> D2 : F08: Increment Packing Stock / Ledger
+P4_3 --> D3 : Mark Task Completed
+
+E1 --> P5 : F09: Query Own Order
+P5 --> D3 : Read Order Status
+P5 --> E1 : Return Fulfilled Receipt
+
+P1 --> P6 : F10: Login Audit
+P3 --> P6 : F10: Reservation Audit
+P4_3 --> P6 : F10: Movement Audit
+P6 --> D5 : Append-Only Write
+E3 --> P6 : F11: Review Audit Logs
+@enduml

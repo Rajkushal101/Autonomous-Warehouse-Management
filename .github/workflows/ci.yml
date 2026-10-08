@@ -1,0 +1,75 @@
+name: Secure CI/CD Pipeline - Autonomous Warehouse Management
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+
+jobs:
+  build-test-security:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: warehouse_app
+          POSTGRES_PASSWORD: test_secure_password_123
+          POSTGRES_DB: warehouse_test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # Stage 1: Checkout
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Stage 2: Environment & Build
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Locked Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Database Migrations and Seed
+        env:
+          DATABASE_URL: postgresql://warehouse_app:test_secure_password_123@localhost:5432/warehouse_test_db
+        run: |
+          python scripts/seed_demo.py
+
+      # Stage 3: Automated Testing (Unit, Integration, System, Fuzzing)
+      - name: Execute Automated Test Suites
+        env:
+          DATABASE_URL: postgresql://warehouse_app:test_secure_password_123@localhost:5432/warehouse_test_db
+        run: |
+          pytest -v --tb=short tests/
+
+      # Stage 4: Static Security Gate (Bandit AST Scanner)
+      - name: Run Bandit AST Security Gate
+        run: |
+          bandit -r app/ worker/ -ll -f txt -o bandit_report.txt
+          cat bandit_report.txt
+
+      # Stage 5: Package Container
+      - name: Build Hardened Container Image
+        run: |
+          docker build -t awms:${{ github.sha }} .
+          docker inspect awms:${{ github.sha }} --format 'Image Digest / ID: {{.Id}}'

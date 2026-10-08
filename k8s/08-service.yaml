@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: awms-service
+  namespace: warehouse-lab
+  labels:
+    app: awms-api
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8000
+  selector:
+    app: awms-api
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: awms-network-policy
+  namespace: warehouse-lab
+spec:
+  podSelector:
+    matchLabels:
+      app: awms-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow incoming traffic to port 8000 from within namespace and ingress controller
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8000
+  egress:
+    # Allow outgoing TCP traffic only to PostgreSQL (5432) and DNS (53)
+    - to:
+        - podSelector:
+            matchLabels:
+              app: awms-postgres
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: UDP
+          port: 53

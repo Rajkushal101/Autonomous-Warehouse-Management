@@ -1,0 +1,47 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam roundcorner 5
+skinparam defaultFontName "Segoe UI"
+
+rectangle "UI-01: User Login Screen" as UI01 {
+    [Username: [______________]]
+    [Password: [**************]]
+    [Sign In Button]
+    note bottom: Generic errors, rate limit alerts, CSRF protected
+}
+
+rectangle "UI-02: Customer Order & Tracking (Student Exam Screen)" as UI02 {
+    [Select Product: [Widget A - $20]]
+    [Quantity: [ 2 ]]
+    [Submit Order (Idempotent)]
+    [Order Status: RESERVED -> PICKING -> PACKING AREA]
+    note bottom: Strict IDOR prevention, live progress bar
+}
+
+rectangle "UI-03: Warehouse Management (Faculty Management)" as UI03 {
+    [Inventory Table: SKU | On-Hand | Reserved | Available]
+    [Stock Adjustment: Delta (+/-) | Reason [_________]]
+    [Apply Adjustment Button (Manager Only)]
+    note bottom: Invariant check (on_hand >= reserved), mandatory reason
+}
+
+rectangle "UI-04: Fulfillment Results (Exam Results Screen)" as UI04 {
+    [Order #ORD-10928 Delivery Confirmation]
+    [Status: FULFILLED AT PACKING BAY 2]
+    [Robot: AGV-01 | Timestamp: 2026-10-08 10:14 UTC]
+    note bottom: Verifiable delivery receipt, tenant-isolated
+}
+
+rectangle "UI-05: Robot Fleet & Operations Console" as UI05 {
+    [Warehouse 10x10 Grid Map]
+    [Robot AGV-01: Pos (2,3) | Battery 85% | Status BUSY]
+    [Robot AGV-02: Pos (8,1) | Battery 92% | Status IDLE]
+    [EMERGENCY PAUSE TOGGLE]
+}
+
+rectangle "UI-06: Security Audit & Compliance Log" as UI06 {
+    [Audit Trail: Timestamp | Actor | Action | Outcome | IP]
+    [Read-Only Filter: [LOGIN_FAILED / PRIV_ESCALATION]]
+    note bottom: Append-only, no update/delete UI controls
+}
+@enduml

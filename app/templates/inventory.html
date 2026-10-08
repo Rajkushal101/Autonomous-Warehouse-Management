@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span>📊 Warehouse Inventory Console (UI-03: Faculty Management)</span>
+        <span class="badge badge-warning">Operator & Manager</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+        <div>
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Current Inventory Balances</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th>Location</th>
+                        <th>On-Hand</th>
+                        <th>Reserved</th>
+                        <th>Available</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    <tr><td colspan="6" style="text-align: center;">Loading inventory balances...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Authorized Stock Adjustment (Manager Only)</h3>
+            <form id="adjustmentForm">
+                <div class="form-group">
+                    <label for="adjSku">Product SKU</label>
+                    <select id="adjSku" required>
+                        <option value="SKU-001">SKU-001</option>
+                        <option value="SKU-002">SKU-002</option>
+                        <option value="SKU-003">SKU-003</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="adjLoc">Location Code</label>
+                    <input type="text" id="adjLoc" value="SHELF-01" required>
+                </div>
+                <div class="form-group">
+                    <label for="adjDelta">Delta (+ / - Quantity)</label>
+                    <input type="number" id="adjDelta" value="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="adjReason">Mandatory Audit Reason (min 5 chars)</label>
+                    <input type="text" id="adjReason" placeholder="e.g. Periodic physical stock audit" required>
+                </div>
+                <button type="button" onclick="submitAdjustment()" style="width: 100%;">Commit Adjustment</button>
+            </form>
+            <div id="adjFeedback" style="margin-top: 0.75rem; font-size: 0.85rem;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function loadBalances() {
+    try {
+        const res = await fetch("/inventory/balances");
+        const tb = document.getElementById("inventoryTableBody");
+        if (res.ok) {
+            const list = await res.json();
+            tb.innerHTML = list.map(b => `
+                <tr>
+                    <td><strong>${b.sku}</strong></td>
+                    <td>${b.product_name}</td>
+                    <td><code>${b.location_code}</code></td>
+                    <td>${b.on_hand}</td>
+                    <td><span style="color: var(--warning);">${b.reserved}</span></td>
+                    <td><span style="color: var(--success); font-weight: bold;">${b.available}</span></td>
+                </tr>
+            `).join("");
+        } else {
+            tb.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--danger);">Access Denied (Requires OPERATOR or MANAGER role)</td></tr>';
+        }
+    } catch (e) {
+        document.getElementById("inventoryTableBody").innerHTML = '<tr><td colspan="6">Failed to load balances.</td></tr>';
+    }
+}
+
+async function submitAdjustment() {
+    const sku = document.getElementById("adjSku").value;
+    const loc = document.getElementById("adjLoc").value;
+    const delta = parseInt(document.getElementById("adjDelta").value);
+    const reason = document.getElementById("adjReason").value;
+    const fb = document.getElementById("adjFeedback");
+
+    fb.innerHTML = '<span>Submitting adjustment to ledger...</span>';
+    try {
+        const res = await fetch("/inventory/adjustments", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sku: sku, location_code: loc, delta: delta, reason: reason })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            fb.innerHTML = '<span style="color: var(--success); font-weight:bold;">Adjustment committed! New On-Hand: ' + data.on_hand + '</span>';
+            loadBalances();
+        } else {
+            fb.innerHTML = '<span style="color: var(--danger); font-weight:bold;">Rejected: ' + (data.detail?.message || data.detail || "Error") + '</span>';
+        }
+    } catch (e) {
+        fb.innerHTML = '<span style="color: var(--danger);">Network error: ' + e + '</span>';
+    }
+}
+window.onload = loadBalances;
+</script>
+{% endblock %}

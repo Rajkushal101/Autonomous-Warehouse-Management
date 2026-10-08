@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: awms-config
+  namespace: warehouse-lab
+data:
+  ENVIRONMENT: "production"
+  PORT: "8000"
+  HOST: "0.0.0.0"
+  LOG_LEVEL: "INFO"
+  SECURE_COOKIES: "true"
+  SIMULATOR_TICK_RATE_MS: "500"
+  ROBOT_HEARTBEAT_TIMEOUT_SECONDS: "30"
+  WAREHOUSE_ID: "11111111-1111-1111-1111-111111111111"

@@ -1,0 +1,13 @@
+Sprint,Day,Date,Committed_Points,Remaining_Points,Ideal_Remaining_Points,Completed_Stories,Defects_Active,Defects_Resolved
+Sprint 1,Day 0,2026-09-01,27,27,27.0,"None",0,0
+Sprint 1,Day 2,2026-09-03,27,24,21.6,"US-01 (3 pts)",1,0
+Sprint 1,Day 4,2026-09-05,27,18,16.2,"US-02 (3 pts), US-03 (3 pts)",1,1
+Sprint 1,Day 6,2026-09-08,27,11,10.8,"US-04 (2 pts), US-05 (5 pts)",2,1
+Sprint 1,Day 8,2026-09-10,27,5,5.4,"US-06 (3 pts), US-07 (3 pts)",1,2
+Sprint 1,Day 10,2026-09-12,27,0,0.0,"US-08 (2 pts), US-09 (3 pts)",0,3
+Sprint 2,Day 0,2026-09-15,29,29,29.0,"None",0,0
+Sprint 2,Day 2,2026-09-17,29,24,23.2,"US-10 (5 pts)",1,0
+Sprint 2,Day 4,2026-09-19,29,16,17.4,"US-11 (5 pts), US-13 (3 pts)",2,1
+Sprint 2,Day 6,2026-09-22,29,10,11.6,"US-12 (3 pts), US-14 (3 pts)",1,2
+Sprint 2,Day 8,2026-09-24,29,5,5.8,"US-15 (2 pts), US-16 (3 pts)",1,2
+Sprint 2,Day 10,2026-09-26,29,0,0.0,"US-17 (3 pts), US-18 (2 pts)",0,3

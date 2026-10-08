@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 820" width="1150" height="820" style="background:#ffffff; font-family:'Segoe UI', Arial, sans-serif;">
+  <defs>
+    <filter id="arch-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arch-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0284c7"/>
+    </marker>
+    <marker id="arch-arrow-db" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <text x="575" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Software Architecture &amp; Component Decomposition</text>
+  <text x="575" y="52" text-anchor="middle" font-size="12" fill="#64748b">Layered Modular Monolith with Background Dispatch Worker (Phase 5)</text>
+
+  <!-- Top Ingress: Users & Devices -->
+  <g transform="translate(60, 90)" filter="url(#arch-shadow)">
+    <rect width="180" height="60" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <text x="90" y="27" text-anchor="middle" font-size="12" font-weight="bold" fill="#0369a1">Human Clients</text>
+    <text x="90" y="44" text-anchor="middle" font-size="10.5" fill="#0284c7">Web UI (Browser)</text>
+  </g>
+
+  <g transform="translate(910, 90)" filter="url(#arch-shadow)">
+    <rect width="180" height="60" rx="8" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+    <text x="90" y="27" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e293b">Robot AGV Devices</text>
+    <text x="90" y="44" text-anchor="middle" font-size="10.5" fill="#475569">Bearer Token Telemetry</text>
+  </g>
+
+  <!-- API & Presentation Layer (TB1 / TB3) -->
+  <rect x="50" y="190" width="1050" height="90" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" filter="url(#arch-shadow)"/>
+  <rect x="70" y="180" width="240" height="20" fill="#e2e8f0" rx="4"/>
+  <text x="80" y="194" font-size="11" font-weight="bold" fill="#334155">FastAPI Presentation &amp; Routing Layer</text>
+
+  <!-- Router Boxes -->
+  <g transform="translate(70, 210)">
+    <rect width="180" height="50" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="90" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Auth &amp; UI Router</text>
+  </g>
+  <g transform="translate(280, 210)">
+    <rect width="180" height="50" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="90" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Order API Router</text>
+  </g>
+  <g transform="translate(490, 210)">
+    <rect width="180" height="50" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="90" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Operations Router</text>
+  </g>
+  <g transform="translate(700, 210)">
+    <rect width="180" height="50" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="90" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Device API Router</text>
+  </g>
+  <g transform="translate(910, 210)">
+    <rect width="170" height="50" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+    <text x="85" y="30" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">Audit &amp; Health API</text>
+  </g>
+
+  <!-- Business Logic Layer (Modular Monolith Components CMP-01 to CMP-07) -->
+  <rect x="50" y="320" width="760" height="260" rx="10" fill="#ffffff" stroke="#3b82f6" stroke-width="2" filter="url(#arch-shadow)"/>
+  <rect x="70" y="310" width="310" height="20" fill="#dbeafe" rx="4"/>
+  <text x="80" y="324" font-size="11" font-weight="bold" fill="#1e40af">Core Domain &amp; Application Services (Layered Monolith)</text>
+
+  <!-- Service Components -->
+  <g transform="translate(70, 345)">
+    <rect width="220" height="55" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="110" y="24" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">CMP-01: IAM &amp; Policy</text>
+    <text x="110" y="40" text-anchor="middle" font-size="9.5" fill="#64748b">(Auth, RBAC, Sessions)</text>
+  </g>
+
+  <g transform="translate(310, 345)">
+    <rect width="230" height="55" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="115" y="24" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">CMP-02: Catalog &amp; Inventory</text>
+    <text x="115" y="40" text-anchor="middle" font-size="9.5" fill="#64748b">(SKUs, Invariant Checks)</text>
+  </g>
+
+  <g transform="translate(560, 345)">
+    <rect width="230" height="55" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="115" y="24" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">CMP-03: Order Reservation</text>
+    <text x="115" y="40" text-anchor="middle" font-size="9.5" fill="#64748b">(Atomic All-or-None Lock)</text>
+  </g>
+
+  <g transform="translate(70, 420)">
+    <rect width="220" height="55" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="110" y="24" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">CMP-04: Task Dispatcher</text>
+    <text x="110" y="40" text-anchor="middle" font-size="9.5" fill="#64748b">(Atomic Binding, Partial UQ)</text>
+  </g>
+
+  <g transform="translate(310, 420)">
+    <rect width="230" height="55" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="115" y="24" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">CMP-05: Movement Simulator</text>
+    <text x="115" y="40" text-anchor="middle" font-size="9.5" fill="#64748b">(Grid BFS, Collision Avoid)</text>
+  </g>
+
+  <g transform="translate(560, 420)">
+    <rect width="230" height="55" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="115" y="24" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1e293b">CMP-06: Fulfillment Engine</text>
+    <text x="115" y="40" text-anchor="middle" font-size="9.5" fill="#64748b">(Packing Bay Delivery Verify)</text>
+  </g>
+
+  <g transform="translate(70, 495)">
+    <rect width="720" height="60" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="360" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="#991b1b">CMP-07: Security Audit &amp; Telemetry Engine</text>
+    <text x="360" y="42" text-anchor="middle" font-size="10" fill="#dc2626">(Attributable Actor Logging, Redaction, Health &amp; Metric Telemetry)</text>
+  </g>
+
+  <!-- Background Worker -->
+  <g transform="translate(840, 320)" filter="url(#arch-shadow)">
+    <rect width="260" height="260" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+    <rect width="260" height="28" rx="8" fill="#d97706"/>
+    <text x="130" y="19" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">Background Dispatch Worker</text>
+    <text x="130" y="60" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400e">Async Simulator Runner</text>
+    <text x="15" y="90" font-size="10.5" fill="#78350f">• Polls queued tasks</text>
+    <text x="15" y="112" font-size="10.5" fill="#78350f">• Locks available idle robots</text>
+    <text x="15" y="134" font-size="10.5" fill="#78350f">• Advances coordinate ticks</text>
+    <text x="15" y="156" font-size="10.5" fill="#78350f">• Enforces collision avoidance</text>
+    <text x="15" y="178" font-size="10.5" fill="#78350f">• Recovers frozen tasks</text>
+    <rect x="20" y="205" width="220" height="35" rx="6" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+    <text x="130" y="227" text-anchor="middle" font-size="10" font-weight="bold" fill="#b45309">WarehouseControl Row Lock</text>
+  </g>
+
+  <!-- Persistence Layer (PostgreSQL) -->
+  <g transform="translate(50, 620)" filter="url(#arch-shadow)">
+    <rect width="1050" height="150" rx="10" fill="#f1f5f9" stroke="#475569" stroke-width="2"/>
+    <rect x="20" y="-10" width="280" height="20" fill="#475569" rx="4"/>
+    <text x="30" y="4" font-size="11" font-weight="bold" fill="#ffffff">CMP-08: Persistence &amp; Unit of Work (PostgreSQL)</text>
+
+    <!-- Table Blocks inside DB -->
+    <rect x="40" y="30" width="180" height="90" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="130" y="55" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e293b">users &amp; sessions</text>
+    <text x="130" y="75" text-anchor="middle" font-size="9.5" fill="#64748b">Opaque Token Digests</text>
+    <text x="130" y="95" text-anchor="middle" font-size="9.5" fill="#64748b">Argon2/Bcrypt Passwords</text>
+
+    <rect x="240" y="30" width="180" height="90" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="330" y="55" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e293b">inventory_balances</text>
+    <text x="330" y="75" text-anchor="middle" font-size="9.5" fill="#64748b">on_hand &gt;= 0</text>
+    <text x="330" y="95" text-anchor="middle" font-size="9.5" fill="#64748b">reserved &lt;= on_hand</text>
+
+    <rect x="440" y="30" width="180" height="90" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="530" y="55" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e293b">orders &amp; reservations</text>
+    <text x="530" y="75" text-anchor="middle" font-size="9.5" fill="#64748b">Atomic Locks</text>
+    <text x="530" y="95" text-anchor="middle" font-size="9.5" fill="#64748b">Idempotency Records</text>
+
+    <rect x="640" y="30" width="180" height="90" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="730" y="55" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e293b">robots &amp; tasks</text>
+    <text x="730" y="75" text-anchor="middle" font-size="9.5" fill="#dc2626" font-weight="bold">Partial Unique Index</text>
+    <text x="730" y="95" text-anchor="middle" font-size="9.5" fill="#64748b">1 Active Task per AGV</text>
+
+    <rect x="840" y="30" width="180" height="90" rx="6" fill="#ffffff" stroke="#dc2626"/>
+    <text x="930" y="55" text-anchor="middle" font-size="11" font-weight="bold" fill="#991b1b">audit_events</text>
+    <text x="930" y="75" text-anchor="middle" font-size="9.5" fill="#dc2626">Append-Only Forensic Log</text>
+    <text x="930" y="95" text-anchor="middle" font-size="9.5" fill="#64748b">Zero App-Level Deletes</text>
+  </g>
+
+  <!-- Connectors -->
+  <line x1="150" y1="150" x2="150" y2="210" stroke="#0284c7" stroke-width="2" marker-end="url(#arch-arrow)"/>
+  <line x1="1000" y1="150" x2="800" y2="210" stroke="#0284c7" stroke-width="2" marker-end="url(#arch-arrow)"/>
+  <line x1="430" y1="580" x2="430" y2="620" stroke="#475569" stroke-width="2" marker-end="url(#arch-arrow-db)"/>
+  <line x1="970" y1="580" x2="970" y2="620" stroke="#475569" stroke-width="2" marker-end="url(#arch-arrow-db)"/>
+
+</svg>

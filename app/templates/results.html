@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: auto;">
+    <div class="card-header">
+        <span>📄 Fulfillment Results & Packing Proof (UI-04: Exam Results)</span>
+        <span class="badge badge-success">Verified Receipt</span>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <label for="orderSearchInput">Inspect Order UUID:</label>
+        <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="orderSearchInput" placeholder="Enter full order UUID">
+            <button onclick="fetchOrderReceipt()">Search</button>
+        </div>
+    </div>
+
+    <div id="receiptContainer" style="display: none; background: #f8fafc; border: 1px solid var(--border); padding: 1.5rem; border-radius: 6px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+            <h3 style="font-size: 1.1rem; color: var(--primary);">Delivery Confirmation Receipt</h3>
+            <span id="orderStatusBadge" class="badge"></span>
+        </div>
+        <p><strong>Order ID:</strong> <code id="recOrderId"></code></p>
+        <p><strong>Created At (UTC):</strong> <span id="recCreatedAt"></span></p>
+        <div style="margin-top: 1rem;">
+            <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Reserved & Delivered Items:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product</th>
+                        <th>Requested</th>
+                        <th>Delivered</th>
+                        <th>Task Status</th>
+                        <th>Robot AGV</th>
+                    </tr>
+                </thead>
+                <tbody id="recItemsBody"></tbody>
+            </table>
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 0.5rem;">
+            Security Invariant: Object ownership verified. Customers cannot view other customer records.
+        </div>
+    </div>
+    <div id="receiptError" style="margin-top: 1rem;"></div>
+</div>
+
+<script>
+async function fetchOrderReceipt() {
+    const orderId = document.getElementById("orderSearchInput").value.trim();
+    const container = document.getElementById("receiptContainer");
+    const err = document.getElementById("receiptError");
+    if (!orderId) return;
+
+    err.innerHTML = '';
+    try {
+        const res = await fetch("/orders/" + orderId);
+        const data = await res.json();
+        if (res.ok) {
+            container.style.display = "block";
+            document.getElementById("recOrderId").innerText = data.order_id;
+            document.getElementById("recCreatedAt").innerText = data.created_at;
+            const badge = document.getElementById("orderStatusBadge");
+            badge.innerText = data.status;
+            badge.className = "badge " + (data.status === "FULFILLED" ? "badge-success" : "badge-info");
+
+            const tb = document.getElementById("recItemsBody");
+            tb.innerHTML = data.items.map(it => `
+                <tr>
+                    <td><strong>${it.sku}</strong></td>
+                    <td>${it.product_name}</td>
+                    <td>${it.requested_qty}</td>
+                    <td><strong style="color: var(--success);">${it.delivered_qty}</strong></td>
+                    <td><span class="badge ${it.task_state === 'COMPLETED' ? 'badge-success' : 'badge-warning'}">${it.task_state}</span></td>
+                    <td><code>${it.assigned_robot || 'Not assigned'}</code></td>
+                </tr>
+            `).join("");
+        } else {
+            container.style.display = "none";
+            err.innerHTML = '<div class="alert alert-error">Order Not Found or Access Denied (IDOR Protection)</div>';
+        }
+    } catch (e) {
+        err.innerHTML = '<div class="alert alert-error">Network error</div>';
+    }
+}
+
+// Auto-fill from URL params
+const urlParams = new URLSearchParams(window.location.search);
+const paramId = urlParams.get('order_id');
+if (paramId) {
+    document.getElementById("orderSearchInput").value = paramId;
+    fetchOrderReceipt();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: awms_db
+    environment:
+      POSTGRES_USER: warehouse_app
+      POSTGRES_PASSWORD: warehouse_dev_pass_placeholder
+      POSTGRES_DB: warehouse_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U warehouse_app -d warehouse_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal_network
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: awms_api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://warehouse_app:warehouse_dev_pass_placeholder@db:5432/warehouse_db
+      SESSION_SECRET_KEY: change_me_to_strong_secret_key_session_64chars_in_production
+      CSRF_SECRET_KEY: change_me_to_strong_secret_key_csrf_64chars_in_production
+      DEVICE_TOKEN_PEPPER: change_me_to_strong_secret_key_pepper_64chars_in_production
+      SECURE_COOKIES: "false"
+    ports:
+      - "127.0.0.1:8000:8000"
+    networks:
+      - internal_network
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: awms_worker
+    command: ["python", "worker/dispatcher.py"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://warehouse_app:warehouse_dev_pass_placeholder@db:5432/warehouse_db
+      DEVICE_TOKEN_PEPPER: change_me_to_strong_secret_key_pepper_64chars_in_production
+      SIMULATOR_TICK_RATE_MS: 500
+    networks:
+      - internal_network
+    restart: unless-stopped
+
+networks:
+  internal_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

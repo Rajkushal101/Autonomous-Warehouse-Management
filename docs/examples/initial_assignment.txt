@@ -1,0 +1,42 @@
+# ==============================================================================
+# INITIAL VULNERABLE CODE - FOR REFACTORING DEMONSTRATION ONLY (Phase 12 / RF-01 / RF-02)
+# File: docs/examples/initial_assignment.txt
+# WARNING: DO NOT USE IN PRODUCTION. CONTAINS CRITICAL SECURITY & CONCURRENCY FLAWS.
+# ==============================================================================
+
+def vulnerable_assign_robot_route(request_data, db_session):
+    """
+    Initial naive assignment implementation demonstrating RF-01 and RF-02 weaknesses:
+    
+    WEAKNESS 1 (RF-01 - Missing Authorization & Schema Validation):
+    - Reads raw untrusted JSON dict directly.
+    - Zero role verification (Customer or anonymous caller can trigger assignment).
+    - Accepts arbitrary client-supplied fields like 'state', bypassing server state machine.
+    
+    WEAKNESS 2 (RF-02 - Race-Prone Read-Modify-Write without Locking or Idempotency):
+    - Executes plain SELECT without FOR UPDATE locks.
+    - Two concurrent HTTP requests read robot as 'IDLE' at the same instant.
+    - Both write 'BUSY' and attach different tasks to the same robot.
+    - Zero request idempotency tracking; network retry creates duplicate commands.
+    """
+    task_id = request_data.get("task_id")
+    robot_id = request_data.get("robot_id")
+    
+    # FLAW: No role authorization check!
+    # FLAW: No input bounds check!
+    
+    # FLAW: Unlocked read-then-write (Race Condition)
+    robot = db_session.query(Robot).filter_by(id=robot_id).first()
+    task = db_session.query(Task).filter_by(id=task_id).first()
+    
+    if robot.status == "IDLE":
+        # RACE WINDOW: A second thread executes here before first commits!
+        robot.status = "BUSY"
+        task.robot_id = robot.id
+        task.state = "ASSIGNED"
+        
+        # FLAW: No sequence check, no audit event
+        db_session.commit()
+        return {"status": "assigned"}
+    
+    return {"error": "robot busy"}

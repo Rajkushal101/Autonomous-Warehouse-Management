@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width: 420px; margin: 3rem auto;">
+    <div class="card">
+        <div class="card-header">
+            <span>🔐 System Authentication (UI-01)</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Authenticate with your warehouse account. Golden Rule: Generic error messages prevent account enumeration.
+        </p>
+        <form action="/auth/login" method="POST" id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="e.g. customer_bob or operator_alice" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="••••••••••••" autocomplete="current-password">
+            </div>
+            <button type="submit" style="width: 100%;">Sign In</button>
+        </form>
+        <div style="margin-top: 1rem; font-size: 0.8rem; background: #f1f5f9; padding: 0.5rem; border-radius: 4px;">
+            <strong>Test Accounts:</strong><br>
+            • <code>customer_bob</code> / <code>CustomerPass123!</code><br>
+            • <code>operator_alice</code> / <code>OperatorPass123!</code><br>
+            • <code>manager_carol</code> / <code>ManagerPass123!</code><br>
+            • <code>admin_dan</code> / <code>AdminPass123!</code><br>
+            • <code>auditor_eve</code> / <code>AuditorPass123!</code>
+        </div>
+    </div>
+</div>
+{% endblock %}

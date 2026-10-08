@@ -1,0 +1,67 @@
+@startuml
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam roundcorner 10
+skinparam monochrome false
+skinparam handwritten false
+
+left to right direction
+
+actor "Customer" as Customer
+actor "Warehouse Operator" as Operator
+actor "Warehouse Manager" as Manager
+actor "System Administrator" as Admin
+actor "Security Auditor" as Auditor
+actor "Robot AGV" as Robot
+actor "Dispatcher Worker" as Dispatcher
+
+rectangle "Autonomous Warehouse Management System (Boundary)" {
+    usecase "UC-01: Authenticate & Manage Session" as UC01
+    usecase "UC-02: Manage Users & Roles" as UC02
+    usecase "UC-03: Manage Catalog & Inventory" as UC03
+    usecase "UC-04: Place Order & Submit Fulfillment" as UC04
+    usecase "UC-05: Register & Maintain Robot" as UC05
+    usecase "UC-06: Assign Robot & Execute Task" as UC06
+    usecase "UC-07: Cancel, Pause & Recover" as UC07
+    usecase "UC-08: View Fulfillment Results" as UC08
+    usecase "UC-09: Review Audit & Health Telemetry" as UC09
+
+    usecase "Validate Stock Invariants" as UC_Sub1
+    usecase "Reserve Stock Atomically" as UC_Sub2
+    usecase "Verify Robot Eligibility" as UC_Sub3
+    usecase "Handle Collision / Stale Heartbeat" as UC_Sub4
+
+    UC03 ..> UC_Sub1 : <<include>>
+    UC04 ..> UC_Sub2 : <<include>>
+    UC06 ..> UC_Sub3 : <<include>>
+    UC_Sub4 ..> UC06 : <<extend>>
+}
+
+Customer --> UC01
+Customer --> UC04
+Customer --> UC07
+Customer --> UC08
+
+Operator --> UC01
+Operator --> UC03
+Operator --> UC06
+Operator --> UC07
+
+Manager --> UC01
+Manager --> UC03
+Manager --> UC05
+Manager --> UC06
+Manager --> UC07
+Manager --> UC08
+
+Admin --> UC01
+Admin --> UC02
+Admin --> UC05
+Admin --> UC09
+
+Auditor --> UC01
+Auditor --> UC09
+
+Dispatcher --> UC06
+Robot --> UC06
+@enduml

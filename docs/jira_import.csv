@@ -1,0 +1,31 @@
+Issue Type,Issue Key,Summary,Description,Priority,Epic Link,Story Points,Sprint
+Epic,EP-01,Identity & Access Management,Core authentication role-based access control and session management,High,,15,
+Epic,EP-02,Catalog & Inventory Ledger,Warehouse geometry inventory balances and immutable movements,High,,15,
+Epic,EP-03,Order Fulfillment Pipeline,Order placement atomic stock reservations and packing verification,Highest,,15,
+Epic,EP-04,Robot Fleet Orchestration,Robot registration device tokens and collision-free dispatching,Highest,,20,
+Epic,EP-05,Security Audit & Telemetry,Append-only forensic event logging and operational metrics,Medium,,10,
+Epic,EP-06,Secure Delivery & CI/CD,Hardened containers Kubernetes manifests and automated security gates,High,,15,
+Story,AWMS-1,Secure User Login and Session Expiry,"As a user, I want secure login and logout so that only my authenticated session can act.",High,EP-01,3,Sprint 1
+Task,AWMS-1-1,Implement bcrypt password hashing and session tokens,Hash passwords with bcrypt and store opaque session digests in DB,High,,,Sprint 1
+Task,AWMS-1-2,Add negative login tests and rate limiting,Verify 401 on bad password and 429 on brute-force attempts,Medium,,,Sprint 1
+Story,AWMS-2,Role Management & RBAC Enforcement,"As an administrator, I want controlled role management so that warehouse privileges remain strictly enforced.",High,EP-01,3,Sprint 1
+Story,AWMS-3,Product Catalog & Grid Location Registry,"As a manager, I want to maintain products and locations so that stock and tasks use valid warehouse geometry.",High,EP-02,3,Sprint 1
+Story,AWMS-4,Inventory Balance Visibility,"As an operator, I want to view available and reserved stock so that I can judge fulfillment readiness.",Medium,EP-02,2,Sprint 1
+Story,AWMS-5,Atomic Stock Reservation for Customer Orders,"As a customer, I want an order to reserve all required items atomically so that fulfillment cannot oversell inventory.",Highest,EP-03,5,Sprint 1
+Task,AWMS-5-1,Implement PostgreSQL row locks for multi-item reservations,Enforce SELECT ... FOR UPDATE ordered by product UUID,Highest,,,Sprint 1
+Task,AWMS-5-2,Concurrency test for competing orders,Assert zero overselling under parallel multi-threaded load,Highest,,,Sprint 1
+Story,AWMS-6,Robot Device Registration & Hashed Tokens,"As a manager, I want registered robot identities so that only known devices receive tasks.",High,EP-04,3,Sprint 1
+Story,AWMS-7,Attributable Security Audit Logging,"As an auditor, I want attributable security events so that sensitive changes can be investigated.",High,EP-05,3,Sprint 1
+Story,AWMS-8,Customer Order Status Tracking,"As a customer, I want to see my own order status so that I know whether fulfillment succeeded.",Medium,EP-03,2,Sprint 1
+Story,AWMS-9,Reproducible Build Environment & Static Scanning,"As a developer, I want a secure reproducible build so that changes can be reviewed and checked.",High,EP-06,3,Sprint 1
+Story,AWMS-10,Atomic Robot Task Assignment,"As an operator, I want atomic robot assignment so that competing requests cannot create conflicting work.",Highest,EP-04,5,Sprint 2
+Task,AWMS-10-1,Implement partial unique index for active tasks,Enforce maximum 1 active task per robot in PostgreSQL schema,Highest,,,Sprint 2
+Task,AWMS-10-2,Integration test IT-01 concurrent assignment,Verify clean 409 Conflict rejection on second competing request,Highest,,,Sprint 2
+Story,AWMS-11,Collision-Safe Robot Movement Simulator,"As a robot service, I want safe pickup and movement commands so that reserved goods reach packing without collisions.",Highest,EP-04,5,Sprint 2
+Story,AWMS-12,Robot Heartbeat & Stale Fault Recovery,"As an operator, I want heartbeat and fault handling so that stale robots stop receiving unsafe work.",High,EP-04,3,Sprint 2
+Story,AWMS-13,Authorized Manager Stock Adjustments,"As a manager, I want controlled stock adjustments so that counted inventory can be corrected without silent manipulation.",High,EP-02,3,Sprint 2
+Story,AWMS-14,Emergency Operational Pause & Order Cancellation,"As an operator, I want safe pause and cancellation so that work can stop without losing or duplicating goods.",High,EP-03,3,Sprint 2
+Story,AWMS-15,Fulfillment Delivery to Packing Verification,"As a manager, I want fulfillment results so that I can verify goods arrived in packing.",Medium,EP-03,2,Sprint 2
+Story,AWMS-16,Container Hardening (Docker & Kubernetes),"As a maintainer, I want hardened Docker and Kubernetes deployment so that the application runs with limited privileges.",High,EP-06,3,Sprint 2
+Story,AWMS-17,Automated CI/CD Pipeline & Fuzz Testing,"As a developer, I want tests and security checks in CI so that defective changes fail before packaging.",High,EP-06,3,Sprint 2
+Story,AWMS-18,Operational Health & Security Metric Telemetry,"As an operator, I want security metrics and alerts so that failures and abuse can be detected quickly.",Medium,EP-05,2,Sprint 2

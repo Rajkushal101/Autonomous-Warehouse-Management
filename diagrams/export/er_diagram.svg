@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 850" width="1100" height="850" style="background:#ffffff; font-family:'Segoe UI', Arial, sans-serif;">
+  <defs>
+    <filter id="er-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <text x="550" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Entity Relationship Diagram: Autonomous Warehouse Management System</text>
+  <text x="550" y="52" text-anchor="middle" font-size="12" fill="#64748b">Complete Relational Data Schema, Keys, &amp; Integrity Constraints (Phase 4)</text>
+
+  <!-- Group 1: Users & Sessions -->
+  <!-- Entity: users -->
+  <g transform="translate(40, 80)" filter="url(#er-shadow)">
+    <rect width="200" height="130" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="2"/>
+    <rect width="200" height="28" rx="6" fill="#3b82f6"/>
+    <text x="100" y="19" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">users</text>
+    <text x="10" y="46" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="64" font-size="10.5" fill="#334155">UQ  username : VARCHAR</text>
+    <text x="10" y="80" font-size="10.5" fill="#334155">    password_hash : VARCHAR</text>
+    <text x="10" y="96" font-size="10.5" fill="#334155">    role : ENUM(5)</text>
+    <text x="10" y="112" font-size="10.5" fill="#334155">    is_active : BOOL</text>
+  </g>
+
+  <!-- Entity: sessions -->
+  <g transform="translate(40, 240)" filter="url(#er-shadow)">
+    <rect width="200" height="120" rx="6" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect width="200" height="26" rx="6" fill="#60a5fa"/>
+    <text x="100" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">sessions</text>
+    <text x="10" y="44" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="60" font-size="10.5" fill="#334155">FK  user_id : UUID</text>
+    <text x="10" y="76" font-size="10.5" fill="#334155">UQ  token_digest : VARCHAR(64)</text>
+    <text x="10" y="92" font-size="10.5" fill="#334155">    csrf_token : VARCHAR(64)</text>
+    <text x="10" y="108" font-size="10.5" fill="#334155">    expires_at : TIMESTAMPTZ</text>
+  </g>
+
+  <!-- Group 2: Warehouse, Locations, Controls -->
+  <!-- Entity: warehouses -->
+  <g transform="translate(290, 80)" filter="url(#er-shadow)">
+    <rect width="190" height="100" rx="6" fill="#f8fafc" stroke="#8b5cf6" stroke-width="2"/>
+    <rect width="190" height="28" rx="6" fill="#8b5cf6"/>
+    <text x="95" y="19" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">warehouses</text>
+    <text x="10" y="46" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="64" font-size="10.5" fill="#334155">    name : VARCHAR</text>
+    <text x="10" y="80" font-size="10.5" fill="#334155">    grid_width : INT</text>
+    <text x="10" y="96" font-size="10.5" fill="#334155">    grid_height : INT</text>
+  </g>
+
+  <!-- Entity: warehouse_controls -->
+  <g transform="translate(290, 210)" filter="url(#er-shadow)">
+    <rect width="190" height="110" rx="6" fill="#f8fafc" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect width="190" height="26" rx="6" fill="#a78bfa"/>
+    <text x="95" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">warehouse_controls</text>
+    <text x="10" y="44" font-size="11" font-weight="bold" fill="#1e293b">PK,FK warehouse_id : UUID</text>
+    <text x="10" y="60" font-size="10.5" fill="#334155">    paused : BOOL</text>
+    <text x="10" y="76" font-size="10.5" fill="#334155">    stop_reason : TEXT</text>
+    <text x="10" y="92" font-size="10.5" fill="#334155">    current_tick : BIGINT</text>
+  </g>
+
+  <!-- Entity: locations -->
+  <g transform="translate(290, 350)" filter="url(#er-shadow)">
+    <rect width="190" height="140" rx="6" fill="#f8fafc" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect width="190" height="26" rx="6" fill="#a78bfa"/>
+    <text x="95" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">locations</text>
+    <text x="10" y="44" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="60" font-size="10.5" fill="#334155">FK  warehouse_id : UUID</text>
+    <text x="10" y="76" font-size="10.5" fill="#334155">    code : VARCHAR</text>
+    <text x="10" y="92" font-size="10.5" fill="#334155">    type : ENUM(4)</text>
+    <text x="10" y="108" font-size="10.5" fill="#334155">UQ  (x, y) : INT</text>
+    <text x="10" y="124" font-size="10.5" fill="#334155">    is_blocked : BOOL</text>
+  </g>
+
+  <!-- Group 3: Products, Inventory, Movements -->
+  <!-- Entity: products -->
+  <g transform="translate(530, 80)" filter="url(#er-shadow)">
+    <rect width="210" height="110" rx="6" fill="#f8fafc" stroke="#10b981" stroke-width="2"/>
+    <rect width="210" height="28" rx="6" fill="#10b981"/>
+    <text x="105" y="19" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">products</text>
+    <text x="10" y="46" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="64" font-size="10.5" fill="#334155">UQ  sku : VARCHAR(64)</text>
+    <text x="10" y="80" font-size="10.5" fill="#334155">    name : VARCHAR</text>
+    <text x="10" y="96" font-size="10.5" fill="#334155">    weight : NUMERIC (>0)</text>
+  </g>
+
+  <!-- Entity: inventory_balances -->
+  <g transform="translate(530, 230)" filter="url(#er-shadow)">
+    <rect width="210" height="130" rx="6" fill="#f8fafc" stroke="#10b981" stroke-width="1.5"/>
+    <rect width="210" height="26" rx="6" fill="#34d399"/>
+    <text x="105" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">inventory_balances</text>
+    <text x="10" y="44" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="60" font-size="10.5" fill="#334155">FK  warehouse_id : UUID</text>
+    <text x="10" y="76" font-size="10.5" fill="#334155">FK  product_id : UUID</text>
+    <text x="10" y="92" font-size="10.5" fill="#334155">FK  location_id : UUID</text>
+    <text x="10" y="108" font-size="10.5" fill="#334155">    on_hand : INT (>= 0)</text>
+    <text x="10" y="124" font-size="10.5" fill="#334155">    reserved : INT (<= on_hand)</text>
+  </g>
+
+  <!-- Entity: inventory_movements -->
+  <g transform="translate(530, 400)" filter="url(#er-shadow)">
+    <rect width="210" height="140" rx="6" fill="#f8fafc" stroke="#10b981" stroke-width="1.5"/>
+    <rect width="210" height="26" rx="6" fill="#34d399"/>
+    <text x="105" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">inventory_movements</text>
+    <text x="10" y="44" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="60" font-size="10.5" fill="#334155">FK  product_id : UUID</text>
+    <text x="10" y="76" font-size="10.5" fill="#334155">FK  from/to_loc_id : UUID</text>
+    <text x="10" y="92" font-size="10.5" fill="#334155">    qty : INT</text>
+    <text x="10" y="108" font-size="10.5" fill="#334155">    movement_type : ENUM</text>
+    <text x="10" y="124" font-size="10.5" fill="#334155">UQ  source_event_id : UUID</text>
+  </g>
+
+  <!-- Group 4: Orders & Tasks -->
+  <!-- Entity: orders -->
+  <g transform="translate(790, 80)" filter="url(#er-shadow)">
+    <rect width="240" height="120" rx="6" fill="#f8fafc" stroke="#f59e0b" stroke-width="2"/>
+    <rect width="240" height="28" rx="6" fill="#f59e0b"/>
+    <text x="120" y="19" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">orders</text>
+    <text x="10" y="46" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="64" font-size="10.5" fill="#334155">FK  customer_id : UUID</text>
+    <text x="10" y="80" font-size="10.5" fill="#334155">FK  warehouse_id : UUID</text>
+    <text x="10" y="96" font-size="10.5" fill="#334155">    status : ENUM(6)</text>
+    <text x="10" y="112" font-size="10.5" fill="#334155">    version : INT (OCC)</text>
+  </g>
+
+  <!-- Entity: order_items -->
+  <g transform="translate(790, 230)" filter="url(#er-shadow)">
+    <rect width="240" height="100" rx="6" fill="#f8fafc" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect width="240" height="26" rx="6" fill="#fbbf24"/>
+    <text x="120" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">order_items</text>
+    <text x="10" y="44" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="60" font-size="10.5" fill="#334155">FK  order_id : UUID</text>
+    <text x="10" y="76" font-size="10.5" fill="#334155">FK  product_id : UUID</text>
+    <text x="10" y="92" font-size="10.5" fill="#334155">    requested_qty / delivered_qty</text>
+  </g>
+
+  <!-- Entity: tasks -->
+  <g transform="translate(790, 360)" filter="url(#er-shadow)">
+    <rect width="240" height="150" rx="6" fill="#f8fafc" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect width="240" height="26" rx="6" fill="#fbbf24"/>
+    <text x="120" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">tasks</text>
+    <text x="10" y="44" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="60" font-size="10.5" fill="#334155">UQ  reservation_id : UUID</text>
+    <text x="10" y="76" font-size="10.5" fill="#334155">PARTIAL_UQ robot_id : UUID</text>
+    <text x="10" y="92" font-size="10.5" fill="#334155">FK  pickup_loc / drop_loc</text>
+    <text x="10" y="108" font-size="10.5" fill="#334155">    state : ENUM(10)</text>
+    <text x="10" y="124" font-size="10.5" fill="#334155">    resume_state : VARCHAR</text>
+    <text x="10" y="140" font-size="10.5" fill="#334155">    quantity : INT</text>
+  </g>
+
+  <!-- Bottom Row: robots, commands, audit_events -->
+  <!-- Entity: robots -->
+  <g transform="translate(40, 570)" filter="url(#er-shadow)">
+    <rect width="240" height="150" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="2"/>
+    <rect width="240" height="28" rx="6" fill="#475569"/>
+    <text x="120" y="19" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">robots</text>
+    <text x="10" y="46" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="64" font-size="10.5" fill="#334155">FK  warehouse_id : UUID</text>
+    <text x="10" y="80" font-size="10.5" fill="#334155">UQ  serial_number : VARCHAR</text>
+    <text x="10" y="96" font-size="10.5" fill="#334155">UQ  token_digest : VARCHAR(64)</text>
+    <text x="10" y="112" font-size="10.5" fill="#334155">    status : ENUM(5)</text>
+    <text x="10" y="128" font-size="10.5" fill="#334155">    battery_pct : INT</text>
+    <text x="10" y="144" font-size="10.5" fill="#334155">    last_seen : TIMESTAMPTZ</text>
+  </g>
+
+  <!-- Entity: commands -->
+  <g transform="translate(320, 570)" filter="url(#er-shadow)">
+    <rect width="230" height="150" rx="6" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+    <rect width="230" height="26" rx="6" fill="#64748b"/>
+    <text x="115" y="18" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">commands</text>
+    <text x="10" y="44" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="60" font-size="10.5" fill="#334155">FK  robot_id : UUID</text>
+    <text x="10" y="76" font-size="10.5" fill="#334155">FK  task_id : UUID</text>
+    <text x="10" y="92" font-size="10.5" fill="#334155">UQ  (robot_id, sequence_no)</text>
+    <text x="10" y="108" font-size="10.5" fill="#334155">    command_type : ENUM(4)</text>
+    <text x="10" y="124" font-size="10.5" fill="#334155">    expected_state : VARCHAR</text>
+    <text x="10" y="140" font-size="10.5" fill="#334155">    status : ENUM(4)</text>
+  </g>
+
+  <!-- Entity: audit_events -->
+  <g transform="translate(600, 570)" filter="url(#er-shadow)">
+    <rect width="250" height="150" rx="6" fill="#f8fafc" stroke="#dc2626" stroke-width="2"/>
+    <rect width="250" height="28" rx="6" fill="#dc2626"/>
+    <text x="125" y="19" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">audit_events (Append-Only)</text>
+    <text x="10" y="46" font-size="11" font-weight="bold" fill="#1e293b">PK  id : UUID</text>
+    <text x="10" y="64" font-size="10.5" fill="#334155">    timestamp : TIMESTAMPTZ</text>
+    <text x="10" y="80" font-size="10.5" fill="#334155">    actor_id : UUID</text>
+    <text x="10" y="96" font-size="10.5" fill="#334155">    action : VARCHAR</text>
+    <text x="10" y="112" font-size="10.5" fill="#334155">    target_entity : VARCHAR</text>
+    <text x="10" y="128" font-size="10.5" fill="#334155">    outcome : ENUM (SUCCESS/DENIED)</text>
+    <text x="10" y="144" font-size="10.5" fill="#334155">    metadata_json : JSONB</text>
+  </g>
+
+  <!-- Relationship Connectors (clean lines) -->
+  <path d="M 140,210 L 140,240" stroke="#3b82f6" stroke-width="1.8" fill="none"/>
+  <path d="M 240,140 L 790,140" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3,3" fill="none"/>
+  <path d="M 385,180 L 385,210" stroke="#8b5cf6" stroke-width="1.8" fill="none"/>
+  <path d="M 385,320 L 385,350" stroke="#8b5cf6" stroke-width="1.8" fill="none"/>
+  <path d="M 635,190 L 635,230" stroke="#10b981" stroke-width="1.8" fill="none"/>
+  <path d="M 635,360 L 635,400" stroke="#10b981" stroke-width="1.8" fill="none"/>
+  <path d="M 910,200 L 910,230" stroke="#f59e0b" stroke-width="1.8" fill="none"/>
+  <path d="M 910,330 L 910,360" stroke="#f59e0b" stroke-width="1.8" fill="none"/>
+  <path d="M 280,645 L 320,645" stroke="#475569" stroke-width="1.8" fill="none"/>
+  <path d="M 550,645 L 600,645" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="3,3" fill="none"/>
+
+</svg>

@@ -1,0 +1,57 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam roundcorner 10
+skinparam defaultFontName "Segoe UI"
+
+actor "Human Users\n(Customer, Operator, Admin)" as Users #e0f2fe
+actor "Robot AGVs" as Robots #e2e8f0
+
+package "Presentation & API Gateway (TB1 / TB3)" {
+    component "FastAPI Web & REST Controllers" as Controllers {
+        portin "HTTP / HTTPS (Port 8000)" as Port8000
+        [Auth API & UI Router]
+        [Order API]
+        [Operations & Robot API]
+        [Device Telemetry API]
+        [Audit & Health API]
+    }
+}
+
+package "Core Application Monolith (Application Layer)" {
+    component "CMP-01: IAM & Access Policy" as CMP01 #ffffff
+    component "CMP-02: Catalog & Inventory Ledger" as CMP02 #ffffff
+    component "CMP-03: Order Reservation Orchestrator" as CMP03 #ffffff
+    component "CMP-04: Robot Fleet & Task Dispatcher" as CMP04 #ffffff
+    component "CMP-05: Discrete Movement Simulator" as CMP05 #ffffff
+    component "CMP-06: Fulfillment & Reporting Engine" as CMP06 #ffffff
+    component "CMP-07: Security Audit & Telemetry" as CMP07 #ffffff
+}
+
+package "Background Daemon" {
+    component "Dispatcher Worker Loop\n(Async Simulator Runner)" as Worker #fef3c7
+}
+
+package "Persistence Layer (TB2)" {
+    database "PostgreSQL 16\n(ACID Row Locks & Partial Unique Index)" as DB #f1f5f9
+}
+
+Users --> Port8000 : Web Browser Session
+Robots --> Port8000 : Bearer Device Token
+
+Controllers --> CMP01 : Authenticate & Authorize
+Controllers --> CMP02 : Stock Adjustments
+Controllers --> CMP03 : Place Order (Idempotent)
+Controllers --> CMP04 : Assign Robot
+Controllers --> CMP06 : Query Order Receipts
+Controllers --> CMP07 : Security Logs
+
+Worker --> CMP04 : Poll Queued Tasks
+Worker --> CMP05 : Execute Movement Steps
+CMP05 --> CMP04 : Update State / Next Step
+
+CMP01 --> DB : users, sessions
+CMP02 --> DB : products, locations, balances, movements
+CMP03 --> DB : orders, order_items, reservations
+CMP04 --> DB : robots, tasks, commands, warehouse_controls
+CMP07 --> DB : audit_events (Append-only)
+@enduml

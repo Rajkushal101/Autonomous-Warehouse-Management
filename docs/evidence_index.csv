@@ -1,0 +1,15 @@
+Phase,Evidence_File,Description,Tool_Used,Outcome_Status
+Phase 00,docs/environment.md,Host environment tool capability audit and version check,PowerShell / Python / Docker / Kubectl,VERIFIED
+Phase 02,docs/requirements.csv,Canonical requirements register with CIA priority and use case linkage,Excel / CSV,VERIFIED
+Phase 07,docs/07_assets.csv,Asset catalog with confidentiality integrity availability valuations,STRIDE / Risk Matrix,VERIFIED
+Phase 07,docs/07_threats.csv,STRIDE threat inventory with DFD mapping and proposed mitigations,STRIDE Threat Model,VERIFIED
+Phase 07,docs/07_vulnerabilities.csv,Evaluated vulnerabilities V01-V08 with severity and remediation,CWE / CVSS Analysis,VERIFIED
+Phase 09,docs/09_backlog.csv,User stories backlog across 6 epics with story points and criteria,Scrum / XP Planning,VERIFIED
+Phase 09,docs/jira_import.csv,Ready-to-import Jira backlog CSV with acceptance criteria,Jira CSV Schema,VERIFIED
+Phase 10,docs/10_sprint_metrics.csv,Sprint 1 & Sprint 2 velocity burndown and defect discovery rates,Scrum Metrics Engine,VERIFIED
+Phase 11,evidence/phase11/bandit_scan.txt,Static application security testing (SAST) report across app/,Bandit Security Scanner,VERIFIED (0 Issues)
+Phase 13,evidence/phase13/docker_security_check.txt,Container and Kubernetes security configuration audit report,Docker / Kubectl Audit,VERIFIED (Controls DC-01..08)
+Phase 14,evidence/phase14/test_run_output.txt,Automated test execution logs for 14 unit integration system fuzz tests,Pytest / Hypothesis,VERIFIED (14/14 Passed)
+Phase 14,docs/14_defects.csv,Defect tracking register detailing DEF-01 through DEF-06 with root causes,Defect Tracking Engine,VERIFIED (6/6 Resolved)
+Phase 16,docs/traceability.csv,End-to-end 11-step requirements to deployment traceability matrix,Engineering Traceability,VERIFIED
+Phase 16,submission/manifest.md,Complete artifact manifest and instructions for evaluators,Project Packaging,VERIFIED

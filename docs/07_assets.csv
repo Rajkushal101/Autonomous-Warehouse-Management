@@ -1,0 +1,11 @@
+Asset_ID,Asset_Name,Confidentiality,Integrity,Availability,Business_Impact_Rationale,Owner_Role
+A01,Human Password Hashes & Session Digests,High,High,Medium,Disclosure allows credential stuffing and account takeover; tampering disrupts session validity.,System Administrator
+A02,User Roles & Account Authorization State,High,High,High,Tampering allows unauthorized privilege escalation to Administrator or Operator.,System Administrator
+A03,Inventory Balances & Physical Movement Ledger,Medium,High,High,Tampering creates ghost inventory or physical stock discrepancy; loss of availability stops orders.,Warehouse Manager
+A04,Customer Orders & Stock Reservations,High,High,High,Disclosure leaks customer purchasing intelligence; tampering falsifies order state and reservations.,Customer & System
+A05,Robot Device Tokens & Fleet Registrations,High,High,High,Compromise permits rogue machine injection and fake sensor telemetry.,System Administrator
+A06,Robot Task Sequences & Dispatch Commands,Medium,High,High,Tampering causes unauthorized robot movement, task conflicts, or physical route deviations.,Fulfillment Operator
+A07,Warehouse 2D Grid Map & Cell Occupancy State,Medium,High,High,Falsification undermines spatial mutual exclusion, inducing robot collisions.,Fulfillment Operator
+A08,Security Audit Trail & Forensic Evidence Logs,Medium,High,High,Tampering destroys accountability and impedes investigation of insider threats.,Security Auditor
+A09,Application Server & Dispatcher Availability,Medium,High,High,Denial of service halts continuous picking, packing, and fulfillment throughput.,Operations Team
+A10,Container Images & CI/CD Pipeline Configuration,High,High,High,Compromise introduces malicious backdoors or unauthorized runtime capabilities.,DevSecOps Maintainer

@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1150 750" width="1150" height="750" style="background:#ffffff; font-family:'Segoe UI', Arial, sans-serif;">
+  <defs>
+    <filter id="at-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.12"/>
+    </filter>
+    <marker id="at-arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+
+  <text x="575" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#0f172a">Attack Tree: AT-00 Unauthorized / Conflicting Robot Movement</text>
+  <text x="575" y="52" text-anchor="middle" font-size="12" fill="#64748b">Formal AND/OR Decomposition of Threat Vectors to Physical Warehouse Fulfillment (Phase 8)</text>
+
+  <!-- Root Node: AT-00 -->
+  <g transform="translate(325, 75)" filter="url(#at-shadow)">
+    <rect width="500" height="60" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+    <text x="250" y="27" text-anchor="middle" font-size="12" font-weight="bold" fill="#991b1b">AT-00: Cause Unauthorized / Conflicting Robot Movement (ROOT)</text>
+    <text x="250" y="45" text-anchor="middle" font-size="10.5" fill="#b91c1c">[OR Gate: Any Sub-Branch Achieves Goal]</text>
+  </g>
+
+  <!-- Level 1 Sub-Goals (OR Branches) -->
+  <!-- Branch 1: AT-01 -->
+  <g transform="translate(40, 180)" filter="url(#at-shadow)">
+    <rect width="240" height="55" rx="6" fill="#ffedd5" stroke="#ea580c" stroke-width="1.8"/>
+    <text x="120" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="#9a3412">AT-01: Exploit Privileged Session</text>
+    <text x="120" y="42" text-anchor="middle" font-size="10" fill="#c2410c">[AND Gate: Credentials + Command]</text>
+  </g>
+
+  <!-- Branch 2: AT-02 -->
+  <g transform="translate(315, 180)" filter="url(#at-shadow)">
+    <rect width="240" height="55" rx="6" fill="#ffedd5" stroke="#ea580c" stroke-width="1.8"/>
+    <text x="120" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="#9a3412">AT-02: Direct API Auth Bypass</text>
+    <text x="120" y="42" text-anchor="middle" font-size="10" fill="#c2410c">[AND Gate: BAC Exploit + UUIDs]</text>
+  </g>
+
+  <!-- Branch 3: AT-03 -->
+  <g transform="translate(590, 180)" filter="url(#at-shadow)">
+    <rect width="240" height="55" rx="6" fill="#ffedd5" stroke="#ea580c" stroke-width="1.8"/>
+    <text x="120" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="#9a3412">AT-03: Assignment Race Condition</text>
+    <text x="120" y="42" text-anchor="middle" font-size="10" fill="#c2410c">[AND Gate: Flood + Lock Bypass]</text>
+  </g>
+
+  <!-- Branch 4: AT-04 -->
+  <g transform="translate(865, 180)" filter="url(#at-shadow)">
+    <rect width="245" height="55" rx="6" fill="#ffedd5" stroke="#ea580c" stroke-width="1.8"/>
+    <text x="122" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="#9a3412">AT-04: Breach Device Boundary</text>
+    <text x="122" y="42" text-anchor="middle" font-size="10" fill="#c2410c">[AND Gate: Token + Sequence Ack]</text>
+  </g>
+
+  <!-- Level 2 Children -->
+  <!-- Under AT-01 -->
+  <g transform="translate(30, 280)" filter="url(#at-shadow)">
+    <rect width="125" height="50" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+    <text x="62" y="22" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">AT-11: Compromise</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9" fill="#475569">Credentials [OR]</text>
+  </g>
+  <g transform="translate(165, 280)" filter="url(#at-shadow)">
+    <rect width="125" height="50" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+    <text x="62" y="22" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">AT-12: Forge Task</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9" fill="#475569">Dispatch Command</text>
+  </g>
+
+  <!-- Under AT-11 -->
+  <g transform="translate(20, 370)" filter="url(#at-shadow)">
+    <rect width="115" height="45" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="57" y="20" text-anchor="middle" font-size="8.5" font-weight="600" fill="#334155">AT-111: Brute-Force</text>
+    <text x="57" y="34" text-anchor="middle" font-size="8" fill="#64748b">Password Guess</text>
+  </g>
+  <g transform="translate(145, 370)" filter="url(#at-shadow)">
+    <rect width="115" height="45" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="57" y="20" text-anchor="middle" font-size="8.5" font-weight="600" fill="#334155">AT-112: Steal Active</text>
+    <text x="57" y="34" text-anchor="middle" font-size="8" fill="#64748b">Session Cookie</text>
+  </g>
+
+  <!-- Under AT-02 -->
+  <g transform="translate(305, 280)" filter="url(#at-shadow)">
+    <rect width="125" height="50" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+    <text x="62" y="22" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">AT-21: Invoke Task API</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9" fill="#475569">as Customer (BAC)</text>
+  </g>
+  <g transform="translate(440, 280)" filter="url(#at-shadow)">
+    <rect width="125" height="50" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+    <text x="62" y="22" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">AT-22: Discover</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9" fill="#475569">Target UUIDs</text>
+  </g>
+
+  <!-- Under AT-03 -->
+  <g transform="translate(580, 280)" filter="url(#at-shadow)">
+    <rect width="125" height="50" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+    <text x="62" y="22" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">AT-31: Flood Competing</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9" fill="#475569">Requests in Parallel</text>
+  </g>
+  <g transform="translate(715, 280)" filter="url(#at-shadow)">
+    <rect width="125" height="50" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+    <text x="62" y="22" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">AT-32: Bypass DB Locks</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9" fill="#475569">(Duplicate Task)</text>
+  </g>
+
+  <!-- Under AT-04 -->
+  <g transform="translate(855, 280)" filter="url(#at-shadow)">
+    <rect width="125" height="50" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+    <text x="62" y="22" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">AT-41: Forge / Extract</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9" fill="#475569">Device Token [OR]</text>
+  </g>
+  <g transform="translate(990, 280)" filter="url(#at-shadow)">
+    <rect width="125" height="50" rx="5" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+    <text x="62" y="22" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1e293b">AT-42: Replay Out-of-</text>
+    <text x="62" y="38" text-anchor="middle" font-size="9" fill="#475569">Sequence Movement</text>
+  </g>
+
+  <!-- Under AT-41 -->
+  <g transform="translate(845, 370)" filter="url(#at-shadow)">
+    <rect width="115" height="45" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="57" y="20" text-anchor="middle" font-size="8.5" font-weight="600" fill="#334155">AT-411: Sniff Cleartext</text>
+    <text x="57" y="34" text-anchor="middle" font-size="8" fill="#64748b">Local Network</text>
+  </g>
+  <g transform="translate(970, 370)" filter="url(#at-shadow)">
+    <rect width="115" height="45" rx="4" fill="#ffffff" stroke="#94a3b8"/>
+    <text x="57" y="20" text-anchor="middle" font-size="8.5" font-weight="600" fill="#334155">AT-412: Extract from</text>
+    <text x="57" y="34" text-anchor="middle" font-size="8" fill="#64748b">Hardcoded Config</text>
+  </g>
+
+  <!-- Refined Mitigations Section at Bottom -->
+  <rect x="40" y="470" width="1070" height="240" rx="8" fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5" filter="url(#at-shadow)"/>
+  <rect x="60" y="458" width="350" height="22" rx="4" fill="#3b82f6"/>
+  <text x="70" y="473" font-size="11" font-weight="bold" fill="#ffffff">Implemented Security Architecture Controls &amp; Verification</text>
+
+  <!-- Mitigation Column 1 -->
+  <g transform="translate(60, 495)">
+    <text x="0" y="20" font-size="11" font-weight="bold" fill="#1e40af">Mitigations for AT-01 (Session Theft):</text>
+    <text x="0" y="40" font-size="10" fill="#334155">• Bcrypt 12-round password hashing</text>
+    <text x="0" y="58" font-size="10" fill="#334155">• IP/User rate limiting (5 fails/5m)</text>
+    <text x="0" y="76" font-size="10" fill="#334155">• Secure, HttpOnly, SameSite cookies</text>
+    <text x="0" y="98" font-size="10" font-weight="bold" fill="#16a34a">Verified: tests/unit/test_authz.py</text>
+  </g>
+
+  <!-- Mitigation Column 2 -->
+  <g transform="translate(320, 495)">
+    <text x="0" y="20" font-size="11" font-weight="bold" fill="#1e40af">Mitigations for AT-02 (API Auth Bypass):</text>
+    <text x="0" y="40" font-size="10" fill="#334155">• Centralized AccessPolicy engine</text>
+    <text x="0" y="58" font-size="10" fill="#334155">• Deny-by-default role guards</text>
+    <text x="0" y="76" font-size="10" fill="#334155">• Session-derived actor context</text>
+    <text x="0" y="98" font-size="10" font-weight="bold" fill="#16a34a">Verified: test_customer_cannot_assign</text>
+  </g>
+
+  <!-- Mitigation Column 3 -->
+  <g transform="translate(580, 495)">
+    <text x="0" y="20" font-size="11" font-weight="bold" fill="#1e40af">Mitigations for AT-03 (Race Condition):</text>
+    <text x="0" y="40" font-size="10" fill="#334155">• PostgreSQL SELECT ... FOR UPDATE</text>
+    <text x="0" y="58" font-size="10" fill="#334155">• Partial Unique Index on active tasks</text>
+    <text x="0" y="76" font-size="10" fill="#334155">• Idempotency records table</text>
+    <text x="0" y="98" font-size="10" font-weight="bold" fill="#16a34a">Verified: tests/integration/test_concurrency.py</text>
+  </g>
+
+  <!-- Mitigation Column 4 -->
+  <g transform="translate(850, 495)">
+    <text x="0" y="20" font-size="11" font-weight="bold" fill="#1e40af">Mitigations for AT-04 (Device Trust):</text>
+    <text x="0" y="40" font-size="10" fill="#334155">• SHA-256 token digests in DB</text>
+    <text x="0" y="58" font-size="10" fill="#334155">• Zero hardcoded secrets in source</text>
+    <text x="0" y="76" font-size="10" fill="#334155">• Monotonic sequence number checks</text>
+    <text x="0" y="98" font-size="10" font-weight="bold" fill="#16a34a">Verified: test_replay_command_ack</text>
+  </g>
+
+  <!-- Tree Connectors -->
+  <!-- From Root to Level 1 -->
+  <path d="M 575,135 L 160,180" stroke="#475569" stroke-width="1.5" marker-end="url(#at-arrow)"/>
+  <path d="M 575,135 L 435,180" stroke="#475569" stroke-width="1.5" marker-end="url(#at-arrow)"/>
+  <path d="M 575,135 L 710,180" stroke="#475569" stroke-width="1.5" marker-end="url(#at-arrow)"/>
+  <path d="M 575,135 L 987,180" stroke="#475569" stroke-width="1.5" marker-end="url(#at-arrow)"/>
+
+  <!-- From Level 1 to Level 2 -->
+  <path d="M 160,235 L 92,280" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+  <path d="M 160,235 L 227,280" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+
+  <path d="M 435,235 L 367,280" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+  <path d="M 435,235 L 502,280" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+
+  <path d="M 710,235 L 642,280" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+  <path d="M 710,235 L 777,280" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+
+  <path d="M 987,235 L 917,280" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+  <path d="M 987,235 L 1052,280" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+
+  <!-- From AT-11 to Leaves -->
+  <path d="M 92,330 L 77,370" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+  <path d="M 92,330 L 202,370" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+
+  <!-- From AT-41 to Leaves -->
+  <path d="M 917,330 L 902,370" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+  <path d="M 917,330 L 1027,370" stroke="#475569" stroke-width="1.2" marker-end="url(#at-arrow)"/>
+
+</svg>

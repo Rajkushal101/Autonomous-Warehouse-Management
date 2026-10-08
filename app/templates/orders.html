@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span>🛒 Customer Order & Tracking (UI-02: Exam Screen)</span>
+        <span class="badge badge-info">Tenant Isolated</span>
+    </div>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Place an order with guaranteed atomic stock reservation. Customer identity is derived securely from server session context.
+    </p>
+
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+        <div>
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Create New Order</h3>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="skuSelect">Product SKU</label>
+                    <select id="skuSelect" required>
+                        <option value="SKU-001">SKU-001: Precision Sensor ($45.00)</option>
+                        <option value="SKU-002">SKU-002: Servo Motor ($75.00)</option>
+                        <option value="SKU-003">SKU-003: Microcontroller ($15.00)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="qtyInput">Quantity (1..100)</label>
+                    <input type="number" id="qtyInput" min="1" max="100" value="1" required>
+                </div>
+                <button type="button" onclick="submitOrder()" style="width: 100%;">Place Order & Reserve</button>
+            </form>
+            <div id="orderFeedback" style="margin-top: 0.75rem; font-size: 0.85rem;"></div>
+        </div>
+
+        <div>
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Your Orders & Fulfillment Status</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Created At (UTC)</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Sign in to load your order history.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+async function submitOrder() {
+    const sku = document.getElementById("skuSelect").value;
+    const qty = parseInt(document.getElementById("qtyInput").value);
+    const feedback = document.getElementById("orderFeedback");
+    
+    // Generate UUIDv4 idempotency key
+    const idempKey = 'idemp-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now();
+    
+    feedback.innerHTML = '<span style="color: var(--primary);">Reserving stock atomically...</span>';
+    try {
+        const res = await fetch("/orders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Idempotency-Key": idempKey
+            },
+            body: JSON.stringify({ items: [{ sku: sku, quantity: qty }] })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            feedback.innerHTML = '<span style="color: var(--success); font-weight: bold;">Order Placed! ID: ' + data.order_id + ' (Status: ' + data.status + ')</span>';
+            loadOrders();
+        } else {
+            feedback.innerHTML = '<span style="color: var(--danger); font-weight: bold;">Failed: ' + (data.detail?.message || data.detail || "Error") + '</span>';
+        }
+    } catch (err) {
+        feedback.innerHTML = '<span style="color: var(--danger);">Network error: ' + err + '</span>';
+    }
+}
+
+async function loadOrders() {
+    try {
+        const res = await fetch("/orders");
+        if (res.ok) {
+            const list = await res.json();
+            const tb = document.getElementById("ordersTableBody");
+            if (list.length === 0) {
+                tb.innerHTML = '<tr><td colspan="4" style="text-align:center;">No orders placed yet.</td></tr>';
+                return;
+            }
+            tb.innerHTML = list.map(o => `
+                <tr>
+                    <td><code>${o.order_id.substring(0,8)}...</code></td>
+                    <td>${o.created_at.substring(0,19)}</td>
+                    <td><span class="badge ${o.status === 'FULFILLED' ? 'badge-success' : 'badge-info'}">${o.status}</span></td>
+                    <td><a href="/web/results?order_id=${o.order_id}" class="btn" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">View Receipt</a></td>
+                </tr>
+            `).join("");
+        }
+    } catch (e) {}
+}
+window.onload = loadOrders;
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+@startuml
+skinparam roundcorner 8
+skinparam defaultFontName "Segoe UI"
+skinparam packageStyle rectangle
+
+rectangle "AT-00: Cause Unauthorized / Conflicting Robot Movement\nCorrupting Warehouse Fulfillment (ROOT)" as Root #fee2e2
+
+rectangle "AT-01: Exploit Privileged Human Session [AND]" as AT01 #ffedd5
+rectangle "AT-02: Direct API Authorization Bypass [AND]" as AT02 #ffedd5
+rectangle "AT-03: Exploit Assignment Race Condition [AND]" as AT03 #ffedd5
+rectangle "AT-04: Compromise Device Trust Boundary [AND]" as AT04 #ffedd5
+
+rectangle "AT-11: Compromise Operator/Manager Credential [OR]" as AT11 #ffffff
+rectangle "AT-12: Forge Privileged Task Dispatch Command" as AT12 #f1f5f9
+rectangle "AT-111: Brute-Force Password" as AT111 #f1f5f9
+rectangle "AT-112: Steal Session Cookie" as AT112 #f1f5f9
+
+rectangle "AT-21: Invoke Task API as Customer (BAC)" as AT21 #f1f5f9
+rectangle "AT-22: Discover Valid Robot & Task UUIDs" as AT22 #f1f5f9
+
+rectangle "AT-31: Flood Competing Assignment Requests" as AT31 #f1f5f9
+rectangle "AT-32: Bypass DB Locks (Duplicate Active Task)" as AT32 #f1f5f9
+
+rectangle "AT-41: Forge / Sniff Device Bearer Token [OR]" as AT41 #ffffff
+rectangle "AT-42: Replay Out-of-Sequence Movement Ack" as AT42 #f1f5f9
+rectangle "AT-411: Sniff Cleartext Traffic" as AT411 #f1f5f9
+rectangle "AT-412: Extract Hardcoded Token" as AT412 #f1f5f9
+
+Root --> AT01 : [OR]
+Root --> AT02 : [OR]
+Root --> AT03 : [OR]
+Root --> AT04 : [OR]
+
+AT01 --> AT11 : [AND]
+AT01 --> AT12 : [AND]
+AT11 --> AT111 : [OR]
+AT11 --> AT112 : [OR]
+
+AT02 --> AT21 : [AND]
+AT02 --> AT22 : [AND]
+
+AT03 --> AT31 : [AND]
+AT03 --> AT32 : [AND]
+
+AT04 --> AT41 : [AND]
+AT04 --> AT42 : [AND]
+AT41 --> AT411 : [OR]
+AT41 --> AT412 : [OR]
+@enduml

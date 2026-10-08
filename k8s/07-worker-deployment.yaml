@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: awms-worker
+  namespace: warehouse-lab
+  labels:
+    app: awms-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: awms-worker
+  template:
+    metadata:
+      labels:
+        app: awms-worker
+    spec:
+      serviceAccountName: awms-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: worker
+          image: awms-app:1.0.0
+          command: ["python", "worker/dispatcher.py"]
+          envFrom:
+            - configMapRef:
+                name: awms-config
+            - secretRef:
+                name: awms-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}

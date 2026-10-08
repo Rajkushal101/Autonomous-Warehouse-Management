@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: awms-migration-job
+  namespace: warehouse-lab
+spec:
+  template:
+    metadata:
+      labels:
+        job: awms-migration
+    spec:
+      serviceAccountName: awms-service-account
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrator
+          image: awms-app:1.0.0
+          command: ["python", "scripts/seed_demo.py"]
+          envFrom:
+            - configMapRef:
+                name: awms-config
+            - secretRef:
+                name: awms-secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: tmp-volume
+              mountPath: /tmp
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
