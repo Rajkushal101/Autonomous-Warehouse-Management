@@ -61,3 +61,9 @@ htmlcov/
 
 # Minikube / K8s local
 *.kubeconfig
+
+# Logs & runtime dumps
+*.log
+warehouse_audit_events.json
+warehouse_dev.db
+
